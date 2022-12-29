@@ -1,15 +1,28 @@
 {
-  "index": "Introduction",
-  "another": "Another Page",
-  "advanced": "Advanced (A Folder)",
-  "about": {
-    "title": "About",
+  "index": {
+    "title": "Home",
+    "type": "page"
+  },
+  "imber-front": {
+    "title": "Front",
+    "type": "page"
+  },
+  "imber-end": {
+    "title": "End",
+    "type": "page"
+  },
+  "imber-ui": {
+    "title": "UI",
+    "type": "page"
+  },
+  "imber-ppt": {
+    "title": "PPT",
     "type": "page"
   },
   "contact": {
-    "title": "Contact ↗",
+    "title": "Juejin",
     "type": "page",
-    "href": "https://twitter.com/shuding_",
+    "href": "https://juejin.cn/user/3378167164966920",
     "newWindow": true
   }
 }

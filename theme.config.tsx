@@ -2,17 +2,17 @@ import React from 'react'
 import { DocsThemeConfig } from 'nextra-theme-docs'
 
 const config: DocsThemeConfig = {
-  logo: <span>My Project</span>,
+  logo: <span>imber</span>,
   project: {
-    link: 'https://github.com/shuding/nextra-docs-template',
+    link: 'https://github.com/imber-web'
   },
   chat: {
-    link: 'https://discord.com',
+    link: 'https://github.com/imber-web'
   },
-  docsRepositoryBase: 'https://github.com/shuding/nextra-docs-template',
+  docsRepositoryBase: 'https://github.com/imber-web',
   footer: {
-    text: 'Nextra Docs Template',
-  },
+    text: '@imber Powerby Nextra'
+  }
 }
 
 export default config
