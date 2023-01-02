@@ -7,6 +7,14 @@
     "title": "Front",
     "type": "page"
   },
+  "imber-leetcode": {
+    "title": "LeetCode",
+    "type": "page"
+  },
+  "imber-base": {
+    "title": "Base",
+    "type": "page"
+  },
   "imber-end": {
     "title": "End",
     "type": "page"
