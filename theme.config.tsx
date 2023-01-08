@@ -2,7 +2,7 @@ import React from 'react'
 import { DocsThemeConfig } from 'nextra-theme-docs'
 
 const config: DocsThemeConfig = {
-  logo: <span>imber的掘金小册</span>,
+  logo: <span>imber的博客</span>,
   project: {
     link: 'https://github.com/imber-web'
   },

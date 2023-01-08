@@ -3,6 +3,10 @@
     "title": "Home",
     "type": "page"
   },
+  "imber-work": {
+    "title": "Work",
+    "type": "page"
+  },
   "imber-front": {
     "title": "Front",
     "type": "page"
