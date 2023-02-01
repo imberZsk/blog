@@ -1,0 +1,60 @@
+## flex 使元素被挤压
+
+下面的代码使关注按钮被挤压了，因为flex属性默认值是xxx flex-shrink为0，则元素可以被缩小
+
+```jsx
+<div className={styles.fa}>
+  {arr.map((item, index) => {
+    return (
+      <div className={styles.son} key={index}>
+        <div>
+          {item} Lorem ipsum dolor sit amet consectetur adipisicing elit. Magnam
+          libero ad, alias expedita possimus cum veniam debitis, placeat,
+          molestias magni quisquam at in eius asperiores saepe. Hic rem
+          voluptate accusantium.
+        </div>
+        <div className={styles.btn}>关注</div>
+      </div>
+    )
+  })}
+</div>
+```
+
+```css
+.fa {
+  background-color: skyblue;
+  padding: 24px;
+  width: 400px;
+  margin-left: 200px;
+  margin-top: 200px;
+}
+.son {
+  background-color: pink;
+  margin: 20px 0;
+  display: flex;
+  justify-content: space-between;
+}
+.btn {
+  width: 66px;
+  height: 32px;
+  line-height: 30px;
+  background: #fff;
+  text-align: center;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+}
+```
+
+![](./flex1.png)
+
+#### 方案一
+
+```css
+.btn {
+	/* ...之前的代码 */
+   flex-shrink: 0;
+}
+```
+
+## flex 使溢出省略号失效
+
+## sticky 不生效

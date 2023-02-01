@@ -1,9 +1,3 @@
-## grid 实现固定多行多列布局（确定项目数量）
-
-![](/Users/imber/Desktop/imber/imber-blog/pages/imber-front/img_grid1.png)
-
-![](./img_grid1.png)
-
 #### JSX DEMO
 
 ```js
@@ -17,6 +11,12 @@ return (
   </div>
 )
 ```
+
+## grid 实现固定多行多列布局（确定项目数量）
+
+![](/Users/imber/Desktop/imber/imber-blog/pages/imber-front/img_grid1.png)
+
+![](./img_grid1.png)
 
 #### 方案一，只需要知道容器长/宽/间隙/排多少列排多少行，不需要项目的大小（推荐，更直观）
 
@@ -52,6 +52,19 @@ return (
 }
 .son {
   background-color: pink;
+}
+```
+
+## grid 一个项目占两个单元格
+
+![](/Users/imber/Desktop/imber/imber-blog/pages/imber-front/img_grid3.png)
+
+![](./img_grid3.png)
+
+```css
+/* 在上面的基础上加grid-column,同理占两行使用grid-row:1/3 */
+.son:first-of-type {
+  grid-column: 1/3;
 }
 ```
 
