@@ -3,25 +3,25 @@ title: 'flex常见布局'
 order: 1
 ---
 
-## flex基础知识
+## flex 基础知识
 
-#### flex一些属性的默认值
+#### flex 一些属性的默认值
 
-flex-grow默认值为0不可以拉伸，flex-shrink默认值为1可以收缩，flex-basis默认值是auto
+flex-grow 默认值为 0 不可以拉伸，flex-shrink 默认值为 1 可以收缩，flex-basis 默认值是 auto
 
-也就是flex: initial === flex 0 1 auto，这个默认值让项目较少时不会去填充满剩余空间，项目较多时文字能换行
+也就是 flex: initial === flex 0 1 auto，这个默认值让项目较少时不会去填充满剩余空间，项目较多时文字能换行
 
-> flex容器有剩余空间时尺寸不会增长（flex-grow:0），flex容器尺寸不足时尺寸会收缩变小（flex-shrink:1），尺寸自适应于内容（flex-basis:auto）（行为类似fit-content）。
+> flex 容器有剩余空间时尺寸不会增长（flex-grow:0），flex 容器尺寸不足时尺寸会收缩变小（flex-shrink:1），尺寸自适应于内容（flex-basis:auto）（行为类似 fit-content）。如果 flex-basis:0%，则为忽略自身宽度。
 
 ```js
-console.log(getComputedStyle(document.body).flexGrow);//flex-grow默认值为0
-console.log(getComputedStyle(document.body).flexShrink);//flex-shrink默认值为1
-console.log(getComputedStyle(document.body).flexBasis);//flex-basis默认值是auto
+console.log(getComputedStyle(document.body).flexGrow) //flex-grow默认值为0
+console.log(getComputedStyle(document.body).flexShrink) //flex-shrink默认值为1
+console.log(getComputedStyle(document.body).flexBasis) //flex-basis默认值是auto
 ```
 
-#### flex缩写属性的值
+#### flex 缩写属性的值
 
-flex长语法比较难记，所以开发的时候尽量用缩写，记住下面两个用得稍多一点的缩写就行了
+flex 长语法比较难记，所以开发的时候尽量用缩写，记住下面两个用得稍多一点的缩写就行了
 
 `flex: 1 === flex:1 1 0%`
 
@@ -29,7 +29,7 @@ flex长语法比较难记，所以开发的时候尽量用缩写，记住下面�
 
 ## flex 使元素被挤压
 
-下面的代码使关注按钮被挤压了，因为flex-shrink默认值 为 0，元素可以被缩小
+下面的代码使关注按钮被挤压了，因为 flex-shrink 默认值 为 0，元素可以被缩小
 
 ```jsx
 const arr = []
@@ -83,18 +83,41 @@ const arr = []
   /* ...之前的代码 */
   flex-shrink: 0;
   /* 或者 */
-  flex:none
+  flex: none;
 }
 ```
 
 #### 方案二
 
 ```css
-.content{
+.content {
   flex: 1;
 }
 ```
 
 ## flex 使溢出省略号失效
 
-## sticky 不生效
+```css
+/* ...之前的代码 */
+.content {
+  width: 200px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  display: flex;
+}
+```
+
+![](./flex2.jpeg)
+
+#### 方案一
+
+去掉 flex，如果高度不对，可以自己写行高
+
+## flex 两列居中布局
+
+#### 方案一
+
+外层大盒子使用 flex，左右两个字盒子使用 flex: 1 1 auto(不熟悉可以去看一下张旭鑫或者阮一峰的博客)，或者 flex: auto 并不给宽度，左边盒子 justify-content: flex-end,在孙盒子里给定宽度就能实现两列居中，主要原理是，用了 flex-grow 为 1 和 flex-basis 为 auto，在没有宽度的时候，宽度为子元素的 content 的宽度，然后因为左右两个 flex-grow 都为 1，均分剩下的空间，就实现了居中效果。
+当希望元素充分利用剩余空间，但是各自的尺寸按照各自内容进行分配的时候，适合使用 flex:auto
+可以参考 www.meizu.cn
