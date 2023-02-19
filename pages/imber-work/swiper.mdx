@@ -31,6 +31,8 @@ const Slider: React.FC = () => {
       loop={true}
       // 变换的速度
       speed={1000}
+      // 初次展示第几个slide
+      // initialSlide={5}
       // 自动轮博的速度
       autoplay={{
         disableOnInteraction: false, //需要加上这个属性，点击轮播图后仍可以轮播
@@ -55,7 +57,9 @@ const Slider: React.FC = () => {
                 cur === index ? styles.slider_circle_active : ''
               }`}
               onClick={() => {
-                {/* 点击后跳转对应位置 */}
+                {
+                  /* 点击后跳转对应位置 */
+                }
                 swiperRef.current.slideToLoop(index, 1000, false)
                 setCur(swiperRef.current.realIndex)
               }}
@@ -68,7 +72,5 @@ const Slider: React.FC = () => {
 }
 export default Slider
 ```
-
-
 
 ## VideoJS
