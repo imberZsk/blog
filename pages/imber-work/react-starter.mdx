@@ -1,0 +1,512 @@
+## React-PC-Starter
+
+> vscode 里下好插件：eslint，prettier，stylelint，editorConfig，vite
+
+#### 初始化项目
+
+- 官网模版创建项目：`pnpm create vite react-h5-starter --template react-swc-ts`
+
+- 安装依赖：`pnpm i`
+
+#### 配置 npm
+
+- 配置`npmrc`
+
+  ```
+  registry = "https://registry.npmmirror.com/"
+  ```
+
+- node 版本限制
+
+#### 配置 eslint
+
+> eslint 选择只检查错误不处理风格，这样 eslint 就不会和 prettier 冲突,eslint 处理代码规范,prettier 处理代码风格
+
+- 安装：`pnpm i eslint -D`
+
+- 生成配置文件：`eslint --init`
+
+  ```json
+  - To check syntax and find problems
+  - JavaScript modules (import/export)
+  - React
+  - YES
+  - Browser
+  - JSON
+  - Yes
+  - pnpm
+  ```
+
+- 配置`eslintrc.json->rules`里配置不用手动引入 react，和配置可以使用 any
+
+  ```json
+  "rules": {
+    //不用手动引入react
+    "react/react-in-jsx-scope": "off",
+    //使用any不报错
+    "@typescript-eslint/no-explicit-any": "off"
+    // 警告console
+    "no-console": 1
+  }
+  ```
+
+- 配置`.vscode>settings.json`，配置后 vscode 保存时自动格式化代码风格
+
+  比如写了一个 var a = 100,会被自动格式化为 const a = 100
+
+  ```json
+  {
+    "editor.codeActionsOnSave": {
+      // 每次保存的时候将代码按照 eslint 格式进行修复
+      "source.fixAll.eslint": true
+    }
+  }
+  ```
+
+- 配置`eslintignore`，eslint 会自动过滤 node_modules
+
+  ```json
+  dist
+  ```
+
+- 掌握`eslint格式化命令`，后面使用 lint-staged 提交代码的时候需要配置
+
+  为什么上面有 vscode 自动 eslint 格式化，还需要命令行: 因为命令行能一次性爆出所有警告问题，便于找到位置修复
+
+  ```js
+  npx eslint . --fix//用npx是使用项目里的eslint，不使用npx是本地npm i eslint -g下载的全局eslint
+  eslint . --fix //全部类型文件
+  eslint . --ext .ts,.tsx --fix //--ext可以指定文件后缀名s
+  ```
+
+#### 配置 prettier
+
+> prettier 格式化风格
+
+- 安装：`pnpm i prettier -D`
+
+- 配置`.prettierrc.json`
+
+  注释要删掉，prettier 的配置文件 json 不支持注释
+
+  ```json
+  {
+    "singleQuote": true, // 单引号
+    "semi": false, // 分号
+    "trailingComma": "none", // 尾随逗号
+    "tabWidth": 2 // 两个空格缩进
+  }
+  ```
+
+- 配置`.prettierignore`
+
+  ```
+  dist
+  pnpm-lock.yaml
+  ```
+
+- 配置`.vscode>settings.json`，配置后 vscode 保存时自动格式化代码风格
+
+  ```json
+  {
+    "editor.codeActionsOnSave": {
+      // 每次保存的时候将代码按照 eslint 格式进行修复
+      "source.fixAll.eslint": true
+    },
+    //自动格式化
+    "editor.formatOnSave": true,
+    //风格用prettier
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  }
+  ```
+
+- 掌握`prettier命令行`
+
+  可以让之前没有格式化的错误一次性暴露出来
+
+  ```js
+  npx prettier --write .//使用Prettier格式化所有文件
+  ```
+
+#### 配置 editorConfig
+
+> editorConfig，可以同步编辑器差异，其实大部分工作 prettier 做了
+
+- 配置`editorconfig`
+
+  ```
+  #不再向上查找.editorconfig
+  root = true
+  # *表示全部文件
+  [*]
+  #编码
+  charset = utf-8
+  #缩进方式
+  indent_style = space
+  #缩进空格数
+  indent_size = 2
+  #换行符lf
+  end_of_line = lf
+  ```
+
+#### 配置 stylelint
+
+> stylelint 处理 css 更专业
+
+- 安装：`pnpm i -D stylelint stylelint-config-standard`
+
+- 配置`.stylelintrc.json`
+
+  ```json
+  {
+    "extends": "stylelint-config-standard"
+  }
+  ```
+
+- 配置`.vscode>settings.json`，配置后 vscode 保存时自动格式化 css
+
+  ```json
+  {
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": true, // 每次保存的时候将代码按照 eslint 格式进行修复
+      "source.fixAll.stylelint": true //自动格式化stylelint
+    },
+    "editor.formatOnSave": true, //自动格式化
+    "editor.defaultFormatter": "esbenp.prettier-vscode" //风格用prettier
+  }
+  ```
+
+- 掌握`stylelint命令行`
+
+  ```js
+  npx stylelint "**/*.css" --fix//格式化所有css,自动修复css
+  ```
+
+#### 配置 husky
+
+> 记得要初始化一个 git 仓库，husky 能执行 git hook，在 commit 的时候对文件进行操作
+>
+> 
+
+- 安装
+
+  `sudo pnpm dlx husky-init`
+
+  ` pnpm install`
+
+  `npx husky add .husky/commit-msg 'npx --no -- commitlint --edit "$1"'`，commit-msg使用commitlint
+  
+  `npx husky add .husky/pre-commit "npm run lint-staged"`，pre-commit使用lint-staged
+
+#### 配置 commitlint
+
+> 提交规范参考：https://www.conventionalcommits.org/en/v1.0.0/
+
+- 安装`pnpm i @commitlint/cli @commitlint/config-conventional -D`
+
+- 配置`.commitlintrc.json`
+
+  ```
+  { extends: ['@commitlint/config-conventional'] }
+  ```
+
+#### 配置 lint-staged
+
+- 安装`pnpm i -D lint-staged `
+
+- 配置`package.json`
+
+  ```json
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "prepare": "husky install",
+    "lint-staged": "npx lint-staged"//新增，对应上面的husky命令
+  },
+  ```
+
+- 配置`.lintstagedrc.json`
+
+  ```json
+  {
+    "*.{ts,tsx,json}": ["prettier --write", "eslint --fix"],
+    "*.css": ["stylelint --fix", "prettier --write"]
+  }
+  ```
+
+#### 配置 vite
+
+- 一些方便开发的配置
+
+  ```js
+  import { defineConfig } from 'vite'
+  import react from '@vitejs/plugin-react-swc'
+  import path from 'path'
+  
+  // https://vitejs.dev/config/
+  export default defineConfig({
+    css: {
+      // 开css sourcemap方便找css
+      devSourcemap: true
+    },
+    plugins: [react()],
+    server: {
+      // 自动打开浏览器
+      open: true
+    },
+    resolve: {
+      // 配置别名
+      alias: { '@': path.resolve(__dirname, './src') }
+    },
+    //打包路径变为相对路径,用liveserver打开,便于本地测试打包后的文件
+    base: './'
+  })
+  ```
+
+- 配置打包分析，用legacy处理兼容性
+
+  `pnpm i rollup-plugin-visualizer -D`
+
+  `pnpm i @vitejs/plugin-legacy -D`，实际遇到了再看官网用
+
+  ```js
+  import { defineConfig } from 'vite'
+  import react from '@vitejs/plugin-react-swc'
+  import { visualizer } from 'rollup-plugin-visualizer'
+  import legacy from '@vitejs/plugin-legacy'
+  import path from 'path'
+  // https://vitejs.dev/config/
+  export default defineConfig({
+    css: {
+      // 开css sourcemap方便找css
+      devSourcemap: true
+    },
+    plugins: [
+      react(),
+      visualizer({
+        open: false // 打包完成后自动打开浏览器，显示产物体积报告
+      }),
+    	//考虑兼容性，实际遇到了再看官网用  
+      legacy({
+        targets: ['ie >= 11'],
+        additionalLegacyPolyfills: ['regenerator-runtime/runtime']
+      })
+    ],
+    server: {
+      // 自动打开浏览器
+      open: true
+    },
+    resolve: {
+      // 配置别名
+      alias: { '@': path.resolve(__dirname, './src') }
+    },
+    //打包路径变为相对路径,用liveserver打开,便于本地测试打包后的文件
+    base: './'
+  })
+  ```
+
+- 如果想手机上看网页，可以`pnpm dev --host`
+
+- 如果想删除console，可以按`h`去help帮助，再按`c`就可以clear console
+
+#### 配置tsconfig
+
+- tsconfig.json需要支持别名
+
+  ```json
+  {
+    "compilerOptions": {
+      "target": "ESNext",
+      "useDefineForClassFields": true,
+      "lib": ["DOM", "DOM.Iterable", "ESNext"],
+      "allowJs": false,
+      "skipLibCheck": true,
+      "esModuleInterop": false,
+      "allowSyntheticDefaultImports": true,
+      "strict": true,
+      "forceConsistentCasingInFileNames": true,
+      "module": "ESNext",
+      "moduleResolution": "Node",
+      "resolveJsonModule": true,
+      "isolatedModules": true,
+      "noEmit": true,
+      "jsx": "react-jsx",
+      "baseUrl": "./",
+      "paths": {
+        "@/*": ["src/*"]
+      }
+    },
+    "include": ["src"],
+    "references": [{ "path": "./tsconfig.node.json" }]
+  }
+  ```
+
+#### 配置 router
+
+- 安装：`pnpm i react-router-dom`
+
+- 配置`router->index.ts`
+
+  ```js
+  import { lazy } from 'react'
+  import { createBrowserRouter } from 'react-router-dom'
+  const Home = lazy(() => import('@/pages/home'))
+  const router = createBrowserRouter([
+    {
+      path: '/',
+      element: <Home></Home>
+    }
+  ])
+  export default router
+  ```
+
+- 配置`main.tsx`
+
+  ```tsx
+  import { RouterProvider } from 'react-router-dom'
+  import ReactDOM from 'react-dom/client'
+  import './global.css'
+  import router from './router'
+  
+  ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
+    <RouterProvider router={router} />
+  )
+  ```
+
+#### 配置 mobx
+
+- 安装`pnpm i mobx mobx-react-lite`
+
+- 配置`model->index.ts`
+
+  ```js
+  import { makeAutoObservable } from 'mobx'
+  
+  const store = makeAutoObservable({
+    count: 1,
+    setCount: (count: number) => {
+      store.count = count
+    }
+  })
+  
+  export default store
+  ```
+
+- 使用方法举个🌰
+
+  ```tsx
+  import store from '@/model'
+  import { Button } from 'antd'
+  import { observer, useLocalObservable } from 'mobx-react-lite'
+  const Home: React.FC = () => {
+    const localStore = useLocalObservable(() => store)
+    return (
+      <div>
+        <Button>Antd</Button>
+        <h1>{localStore.count}</h1>
+      </div>
+    )
+  }
+  
+  export default observer(Home)
+  ```
+
+#### 配置 antd
+
+- 新版本的antd，直接下载就可以用，如果用到它的图片再单独下载`pnpm i antd`
+
+#### 配置初始化css
+
+- 把mian.tsx用的index.css改为global.css，然后简单配置下
+
+  ```css
+  html {
+    line-height: 1.6;
+    height: 100%;
+    width: 100%;
+  }
+  
+  body {
+    margin: 0;
+    overflow: hidden;
+    height: 100%;
+    width: 100%;
+  }
+  
+  a {
+    background-color: transparent;
+  }
+  
+  img {
+    border-style: none;
+  }
+  
+  ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  input,
+  button {
+    outline: none;
+  }
+  ```
+
+
+## React-H5-Starter
+
+> h5项目需要配置自适应布局
+
+#### 配置postcss-px-to-viewport
+
+- 安装：`pnpm i postcss-px-to-viewport -D`
+
+- 配置`postcss.config.cjs`
+
+  ```json
+  "env": {
+    "browser": true,
+    "es2021": true,
+    "node": true//eslint里新增
+  },
+  ```
+
+  ```js
+  module.exports = {
+    plugins: {
+      'postcss-px-to-viewport': {
+        landscape: false, // 是否添加根据 landscapeWidth 生成的媒体查询条件 @media (orientation: landscape)
+        landscapeUnit: 'vw', // 横屏时使用的单位
+        landscapeWidth: 568, // 横屏时使用的视口宽度
+        unitToConvert: 'px', // 要转化的单位
+        viewportWidth: 750, // UI设计稿的宽度
+        unitPrecision: 5, // 转换后的精度，即小数点位数
+        propList: ['*'], // 指定转换的css属性的单位，*代表全部css属性的单位都进行转换
+        viewportUnit: 'vw', // 指定需要转换成的视窗单位，默认vw
+        fontViewportUnit: 'vw', // 指定字体需要转换成的视窗单位，默认vw
+        selectorBlackList: ['special'], // 指定不转换为视窗单位的类名，
+        minPixelValue: 1, // 默认值1，小于或等于1px则不进行转换
+        mediaQuery: true, // 是否在媒体查询的css代码中也进行转换，默认false
+        replace: true, // 是否转换后直接更换属性值
+        exclude: [/node_modules/] // 设置忽略文件，用正则做目录名匹配
+      }
+    }
+  }
+  ```
+
+#### 配置`vconsole`
+
+- 安装`pnpm i vconsole -D`
+
+- `main.tsx`里新增
+
+  ```tsx
+  import VConsole from 'vconsole'
+  new VConsole({ theme: 'dark' })
+  ```
+
+#### antd换成mobile antd
+
+- `pnpm remove antd`
+- `pnpm add mobile-antd`
