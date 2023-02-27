@@ -3,33 +3,17 @@
     "title": "Home",
     "type": "page"
   },
-  "imber-work": {
-    "title": "Work",
+  "imber-feature": {
+    "title": "feature",
     "type": "page"
   },
-  "imber-front": {
-    "title": "Front",
-    "type": "page"
-  },
-  "imber-leetcode": {
-    "title": "LeetCode",
-    "type": "page"
-  },
-  "imber-base": {
-    "title": "Base",
-    "type": "page"
-  },
-  "imber-end": {
-    "title": "End",
-    "type": "page"
-  },
-  "imber-ui": {
-    "title": "UI",
-    "type": "page"
-  },
-  "imber-ppt": {
-    "title": "PPT",
-    "type": "page"
+  "showcase": {
+    "type": "page",
+    "title": "Showcase",
+    "theme": {
+      "typesetting": "article",
+      "layout": "full"
+    }
   },
   "contact": {
     "title": "Juejin",

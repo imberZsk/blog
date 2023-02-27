@@ -1,0 +1,17 @@
+{
+  "index": {
+    "title": "待写的事项"
+  },
+  "work": {
+    "title": "业务功能"
+  },
+  "react": {
+    "title": "react总结"
+  },
+  "gsap": {
+    "title": "gsap入门"
+  },
+  "tailwind": {
+    "title": "tailwind入门"
+  }
+}

@@ -1,0 +1,33 @@
+## Vue 和 React
+
+- react 写得不规范容易报错卡死，react 风格较多不同人写的代码可能天差地别，react 容易出现性能问题比如重复渲染等情况，vue 不用太关注性能问题，可以把组件分细一点
+- 因为 hooks 基于单链网页容易挂，缺少依赖等情况容易出现无限循环
+
+## Nextjs
+
+SSR 框架有这几类比较出名，基于 Angular 的 Angular Universal(3.9k star)，基于 Vue 的 Nuxt.js(41.8k star)，和基于 React 的 Nextjs(98.7k star)，相信如果使用 SSR 框架的话，Nextjs 一定是首选
+
+其实 Nextjs 称为 SSR 不太准确，应该叫做`Ismorphic render同构渲染`，是服务端和客户端共同渲染生成页面，而不是服务端生成完整的 HTMl 页面
+
+资源
+
+- [贴心官网](https://nextjs.org/)
+- [官方案例](https://github.com/vercel/next.js/tree/canary/examples)
+
+功能
+
+- 开箱即用 sass/css module，基于文件的路由
+- 内置标签：Head，Image，Scipt 等
+- 数据传递函数：getStaticProps 和 getStaticPaths，getServerSideProps 和 getInitialProps
+- 钩子：useRouter
+- API 路由
+
+## Nextjs 相对于 React 项目有什么好处？
+
+SSR 不是一个新技术，早些时候是用 php/jsp 做服务端渲染，然后变成 vue/react 客户端渲染，那为什么又回到服务端渲染了呢？
+
+- [CLS](https://web.dev/cls/)累积布局偏移：`Nextjs` 会使图片始终包含尺寸属性，利于 `CLS`
+- SSR 服务端渲染：在服务端生成 `HTMl` 标签，再通过同构技术加载数据，可以加快首屏渲染，利于 `SEO`，如果不太理解为什么更快，可以看这篇文章： [为什么 SSR 比 CSR 首屏渲染更快？](https://baidu.com)
+- SSG 静态站点生成：当每个用户看到的都是一样的静态页面，`SSG` 只在打包的时候构建一次生成一个 `HTML`
+- 相比于老技术模版渲染，`Nextjs` 能给我们 `SPA` 一样的开发体验，还能使用客户端路由功能
+- ...
