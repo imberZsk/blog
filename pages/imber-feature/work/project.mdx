@@ -1,0 +1,108 @@
+## nextwork 查看加载资源
+
+可以看到最下方的请求数，有多少`mb`的传输数据以及这些数据下载到浏览器的时间，触发`DOMContentLoaded`的时间
+
+这些数据可以让我们大概知道网站的一些网络资源请求相关的信息
+
+![截屏2022-11-15 20.29.49.png](https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/1eb507da83604969b0cb7e6b777efe12~tplv-k3u1fbpfcp-watermark.image?)
+
+筛选`fetch/xhr`，然后筛选时间，可以看有没有特别慢的请求，让后端优化
+
+筛选`js，css`，然后筛选大小，看有没有过大的文件，采取适当的优化手段，运维往往会用`gizp`压缩
+
+## 弱网调试
+
+调到高速`3g`模式下，查看网页渲染过程，看是否有奇怪的问题，比如等请求完成再渲染组件，避免看到默认的奇怪的样式
+
+## 接口报错调试
+
+把`axios`的`baseUrl`设置为错误的`url`，使接口报错，看是否兼容接口报错情况，比如 C 端网站可能会有缺省页这个需求
+
+## 清空缓存调试
+
+在打开控制台后，可以右键浏览器的刷新按钮，会出现三个选项，我们常常用`硬性重新加载`就行了，会给请求加上两个请求头`cache-control: no-cache Pragma:no-cache`，会跳过这次缓存去服务端校验新鲜度，推荐一本有用的[掘金小册](https://s.juejin.cn/ds/rrefsXa/)
+
+## 快速发请求测试
+
+控制台用 fetch 快速发请求，给别人演示的时候很方便，举个 🌰：
+
+打开掘金控制台（mac 快捷键 option+command+j）输入`fetch('https://api.juejin.cn/user_api/v1/user/profile_id?aid=2608&uuid=7151269255554745863&spider=0&web_id=7151269255554745863').then(res=>res.json()).then(data=>console.log(data))`
+
+## lighthouse 分析性能瓶颈
+
+控制台跑`lighthouse`，浏览器会给你分析影响性能的因素和给出一些性能指标，我们可以从中发现性能瓶颈，比如 C 端网站如果图片多，性能瓶颈往往是图片问题
+
+## 图片压缩
+
+通过阿里云转`webp`等手段，往往需要后端或者运维去处理，我们前端只需要看一下压缩后的大小，兼容性问题
+
+小图片一般会转`base64`，大一点的图片与 UI 沟通图片大小与清晰度，综合考虑，可以使用免费压缩图片网站https://tinify.cn/
+
+图片懒加载原理：
+
+```
+const images = document.querySelectorAll('img')
+const callback = (entries) => {
+  entries.forEach((entry) => {
+    if (entry.isIntersecting) {
+      const image = entry.target
+      const data_src = image.getAttribute('data-src')
+      image.setAttribute('src', data_src)
+      observer.unobserve(image)
+      console.log('触发')
+    }
+  })
+}
+const observer = new IntersectionObserver(callback)
+images.forEach((image) => {
+  observer.observe(image)
+})
+```
+
+## 路由懒加载
+
+都会用的，相当于分包，再加上一个魔法字符串 如：`/* webpackChunkName: "Home" */`，我们能更清晰知道打包后的产物，其他的产物一类是`main.js`，也就是我们写的代码，另外一些分包的`chunk`等文件是第三方包的代码
+
+## 元素懒加载
+
+可以使用 hooks 函数库里的方法，比如：vueuse 里面的[useIntersectionObserver](https://vueuse.org/core/useIntersectionObserver/)可以实现，ahooks 里面的[useInViewport](https://ahooks.js.org/hooks/use-in-viewport)
+
+## 缓存策略
+
+静态文件走 CDN，合理使用强缓存和协商缓存（还有种启发式缓存，一般不会遇到），缓存是老生常谈的事情了，推荐一本有用的[掘金小册](https://s.juejin.cn/ds/rrefsXa/)
+
+还有一些静态的请求展示这类，可以缓存，避免每次去请求
+
+## 防抖节流
+
+懒人们用 vueuse 或者 ahooks 吧 😄
+
+## 减少重绘回流
+
+比如一些动画，可以用相应的 css 属性开启图层，减少回流
+
+避免一些 css 复杂计算，比如选择器的层级不宜过深，又如不要写 `.box div`这样的代码，因为浏览器会从右到左去识别，会找到页面所有`div`，再去匹配父级为`box`的元素
+
+## webpack 打包优化
+
+thread-loader，代码压缩，合理的 source-map，cache-loader，exclude/include 等
+
+也可以使用`vite`，`vite`是真香
+
+## SSR 服务端渲染
+
+利于 SEO：浏览器爬虫会爬取页面信息（理解为请求并分析 HTML），作为浏览器搜索排名指标之一（当然，砸钱可能最有用）；
+
+SPA 单页面，只有一个 html，这个 html 里面的标签更是少之又少，浏览器爬虫爬取不到有用的信息，自然不利于 SEO，而 SSR 返回一个渲染完成的静态 HTML，里面有足够的信息，所以利于 SEO。
+
+减少白屏时间：SSR 一次性返回完整 DOM 结构的 HTML，想比异步获取 JS 再请求数据渲染时间快很多，丢两张图细品：
+
+SSR：
+
+![截屏2022-11-15 20.32.39.png](https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/b80d034cbba3461ea62b75b0463ffdb5~tplv-k3u1fbpfcp-watermark.image?)
+
+CSR：
+
+![截屏2022-11-15 20.45.30.png](https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/a4a8f848941248c6ab8327873ad7874e~tplv-k3u1fbpfcp-watermark.image?)
+
+csr 从一开始请求到了 html，再去请求对应的 js，再去请求 js 请求接口，请求回来再 append 拼接 dom，而服务端渲染跑服务端代码拼接完整的 dom 返回，相比之下速度快很多

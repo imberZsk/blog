@@ -22,5 +22,8 @@
   },
   "theme": {
     "title": "主题换肤"
+  },
+  "project": {
+    "title": "项目质量"
   }
 }
