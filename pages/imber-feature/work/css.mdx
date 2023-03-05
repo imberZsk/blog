@@ -1,8 +1,40 @@
----
-title: 'css常见问题'
-order: 1
----
+## 
 
+```mdx filename="Markdown"
+## Hello MDX
+
+import { useState } from 'react'
+
+export function Counter({ children }) {
+  const [count, setCount] = useState(0)
+  return (
+    <button onClick={() => setCount(count + 1)}>
+      {children}
+      {count}
+    </button>
+  )
+}
+
+<Counter>**Clicks**: </Counter>
+```
+
+import { useState } from 'react'
+
+export function Counter({ children }) {
+  const [count, setCount] = useState(0)
+  return (
+    <button onClick={() => setCount(count + 1)}>
+      {children}
+      {count}
+    </button>
+  )
+}
+
+<div className="p-4 border border-gray-200 dark:border-gray-900 rounded mt-6">
+  <>
+    <Counter>**Clicks**: </Counter>
+  </>
+</div>
 ## 文字溢出
 
 ```
@@ -132,4 +164,21 @@ useEffect(() => {
 ```
 scroll-snap-type: y mandatory; /*设置父级*/
 scroll-snap-align: center; /*子级设置*/
+```
+
+```jsx
+## Hello MDX
+
+import { useState } from 'react'
+
+export function Counter({ children }) {
+  const [count, setCount] = useState(0)
+  return <button onClick={() => setCount(count + 1)}>
+    {children}{count}
+  </button>
+}
+
+<Counter>**Clicks**: </Counter
+
+>
 ```

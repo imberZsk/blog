@@ -153,7 +153,7 @@ www.meizu.cn
 
 - 竖着排列，一列排完排下一列，这种 flex 和 css 就可以实现，但是顺序是错乱的，瀑布流一般是横着排列
 - 横着排列，只有图片，所有宽度相同，知道高度，这种情况在很多图片网站可以看到，是动态计算出 transform 要位移的值实现的
-- 如果我们不知道宽高怎么办，支持比上面一种情况更复杂的响应式怎么办，这种最麻烦的情况，可以通过 grid 和一点 js 实现，`grid-row:auto span/数字`这个是关键，也就是前面讲到的一个项目占两个单元格，瀑布流就是多占用单元格
+- 如果我们不知道宽高怎么办，支持比上面一种情况更复杂的响应式怎么办，这种最麻烦的情况，可以通过 grid 和一点 js 实现，`grid-row:auto span / 数字`这个是关键，也就是前面讲到的一个项目占两个单元格，瀑布流就是多占用单元格
 
 #### 方案一
 
@@ -171,7 +171,7 @@ export default function App() {
         const clientHeight = item?.clientHeight || 0
         const count = parseInt(clientHeight)
         const result = `auto / span ${count}`
-        item.stylse.gridRow = result
+        item.style.gridRow = result
       })
     }
     handle()
@@ -216,8 +216,9 @@ export default function App() {
 #### 细节
 
 - 如果有图片懒加载，则可能使瀑布流出错，可以自己计算图片高度，也就是手写一个 object-fit：contain 或者 cover 属性
-
 - 如果要动态让 li 的高度可以变化，可以给计算增加一个依赖项，比如 count(我是存 mobx 里了)，触发某件事，让 count+1，每次 count 变化则重新计算瀑布流
+- grid-row:auto span / 数字; 的值必须是整数
+- grid-auto-rows: 1px; 这个属性 firfox 和 qq 浏览器渲染有问题（edge，chrome，safari 没问题），叠瀑布流跌了几十个元素后开始重叠元素
 
 ## 展望
 
