@@ -1,40 +1,3 @@
-## 
-
-```mdx filename="Markdown"
-## Hello MDX
-
-import { useState } from 'react'
-
-export function Counter({ children }) {
-  const [count, setCount] = useState(0)
-  return (
-    <button onClick={() => setCount(count + 1)}>
-      {children}
-      {count}
-    </button>
-  )
-}
-
-<Counter>**Clicks**: </Counter>
-```
-
-import { useState } from 'react'
-
-export function Counter({ children }) {
-  const [count, setCount] = useState(0)
-  return (
-    <button onClick={() => setCount(count + 1)}>
-      {children}
-      {count}
-    </button>
-  )
-}
-
-<div className="p-4 border border-gray-200 dark:border-gray-900 rounded mt-6">
-  <>
-    <Counter>**Clicks**: </Counter>
-  </>
-</div>
 ## 文字溢出
 
 ```
@@ -53,14 +16,11 @@ display:-webkit-box;         // 作为弹性伸缩盒子模型显示。
 
 ## 图片的显示
 
-> 考虑问题：
->
 > 1.  图片居中裁剪
-> 2.  图片高斯模糊和饱和度调节
+> 2.  图片高斯模糊和饱和度
 > 3.  图片大小压缩
 > 4.  图片懒加载
 > 5.  背景全屏铺满
-> 6.  类似朋友圈图片
 
 **居中裁剪:** `object-fit: cover`，我们只需要关注`contain`和`cover`这两个属性，一般`cover`较多
 
@@ -166,19 +126,38 @@ scroll-snap-type: y mandatory; /*设置父级*/
 scroll-snap-align: center; /*子级设置*/
 ```
 
+## 测试写 react 组件
+
 ```jsx
-## Hello MDX
+import { useState } from 'react'
+
+export function Counter({ children }) {
+  const [count, setCount] = useState(0)
+  return (
+    <button onClick={() => setCount(count + 1)}>
+      {children}
+      {count}
+    </button>
+  )
+}
+
+;<Counter>**Clicks**: </Counter>
+```
 
 import { useState } from 'react'
 
 export function Counter({ children }) {
   const [count, setCount] = useState(0)
-  return <button onClick={() => setCount(count + 1)}>
-    {children}{count}
-  </button>
+  return (
+    <button onClick={() => setCount(count + 1)}>
+      {children}
+      {count}
+    </button>
+  )
 }
 
-<Counter>**Clicks**: </Counter
-
->
-```
+<div className="p-4 border border-gray-200 dark:border-gray-900 rounded mt-6">
+  <>
+    <Counter>**Clicks**: </Counter>
+  </>
+</div>

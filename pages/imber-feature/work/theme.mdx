@@ -2,3 +2,87 @@
 title: '主题切换'
 order: 2
 ---
+
+## css变量
+
+新建一个`theme.ts`，引入`index.tsx`
+
+```css
+:root {
+  --bgc: #ffffff;
+}
+.dark {
+  --bgc: #17181a;
+}
+```
+
+用的时候
+
+```css
+.div{
+	background-color: var(--bgc)
+}
+```
+
+## 主题切换
+
+> 如果之前有设置过颜色用之前设置的主题色，在localStorage里看是否有主题变量保存
+>
+> 否则查询系统色，如果有匹配到暗色，使用暗色，否则默认白色
+
+```js
+// 切换为白色主题
+const toLight = () => {
+  localStorage.setItem('theme', 'light')
+  const el = document.documentElement
+  el.classList.remove('dark')
+}
+// 切换为黑色主题
+const toDark = () => {
+  localStorage.setItem('theme', 'dark')
+  const el = document.documentElement
+  el.classList.add('dark')
+}
+// 初始化主题
+export const initTheme = () => {
+  // 从local获取到的theme
+  const theme = window.localStorage.getItem('theme')
+  // 获取匹配到的系统主题色
+  const matchMedia = window.matchMedia('(prefers-color-scheme:dark)')
+  // 监听系统主题色改变
+  matchMedia.onchange = () => {
+    // 如果匹配到黑色
+    if (matchMedia.matches) {
+      toDark()
+    } else {
+      toLight()
+    }
+  }
+  // 如果有设置过主题，取之前设置过的
+  if (theme) {
+    if (theme === 'dark') {
+      toDark()
+    } else {
+      toLight()
+    }
+  }
+  // 没有设置过取系统的黑色，没有取到默认设为白色
+  else {
+    if (matchMedia.matches) {
+      toDark()
+    } else {
+      toLight()
+    }
+  }
+}
+// 手动切换
+export const toggleTheme = () => {
+  const el = document.documentElement
+  if (el.classList.contains('dark')) {
+    toLight()
+  } else {
+    toDark()
+  }
+}
+```
+

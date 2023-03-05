@@ -1,44 +1,21 @@
-git reset
-版本回退/回滚本地代码
+## git常用指令
 
-1.  查看提交信息：git log（git log --oneline 可以查看简介的提交信息）
-2.  回滚到某次提交：git reset --hard commitid
-3.  强制更新：git push -f
-    git revert
-    版本回退/回滚本地代码，保留之前提交记录
-4.  查看提交信息：git log（git log --oneline 可以查看简介的提交信息）
-5.  回滚到某次提交：git revert commitid
-    ○ 会弹出 vim 模式修改需要的提交信息
-    ○ 按下 i 进入可以输入的 insert 模式，然后修改成要的提交信息
-    ○ 修改完后按 ESC 退出 insert 模式，进入 normal 模式
-    ○ 按下:wq 保存并退出
-6.  强制更新：git push -f
-    git cherry-pick
-    合并其他分支所有提交信息（为一次提交）到当前分支
-7.  git log
-8.  git cherry-pick committed
-    git stash
-    在一个分支没有开发完，要到另一个分支去处理问题，用 stash 缓存
-9.  用 vscode 自带的，比较方便
-    git tag
-    上线一个版本可能需要打 tag
-10. git tag v0.1
-11. git push origin tag v0.1
-    git commit --amend
-    修改上次提交的 commit 信息
-    ● 输入：git commit --amend
-    ● 会弹出 vim 模式修改需要的提交信息
-    ○ 按下 i 进入可以输入的 insert 模式，然后修改成要的提交信息
-    ○ 修改完后按 ESC 退出 insert 模式，进入 normal 模式
-    ○ 按下:wq 保存并退出
-    ● 强制更新：git push -f（必须要强制更新，否则多出提交记录）
-    git rebase -i HEAD~3
-    把最近 3 次提交的日志合并为 1 次
-    ● 输入：git rebase -i HEAD~3
-    ● 先出现一个 vim 模式的文件，选择最近一次为 pick（必须第一个为 pick，否则会报错），其余为 s 表示压缩（同上编辑和保存）
-    ● 然后又出现一个 vim 模式文件，选择需要的提交信息，其余注释掉（同上编辑和保存）
-    ● 强制更新：git push -f
-    git rebase
-    rebase 翻译为变基，他的作用和 merge 很相似，用于把一个分支的修改合并到当前分支上
-    ● git rebase master
-    ● 经常有冲突，然后解决后提交并 continue
+1.  查看提交信息：`git log`（git log --oneline 可以查看简介的提交信息）
+2.  回滚到某次提交(版本回退/回滚本地代码)：`git reset --hard commitid`
+3.  回滚到某次提交：`git revert commitid`
+    - 会弹出 vim 模式修改需要的提交信息
+    - 按下 i 进入可以输入的 insert 模式，然后修改成要的提交信息
+    -  修改完后按 ESC 退出 insert 模式，进入 normal 模式
+    -  按下:wq 保存并退出
+    - 强制更新`git push -f`
+4.  强制更新：`git push -f`
+5.  合并其他分支所有提交信息（为一次提交）到当前分支：`git cherry-pick committed`
+6.   缓存文件，在一个分支没有开发完，要到另一个分支去处理问题，用 stash 缓存：`git stash`
+7.  
+    上线一个版本可能需要打 tag：`git tag v0.1`，推送tag用：`git push origin tag v0.1`
+8.  修改上次提交的 commit 信息： `git commit --amend`，输入：`git commit --amend`，然后按vim模式保
+9.  把最近 3 次提交的日志合并为 1 次：`git rebase -i HEAD~3`
+    - 输入：git rebase -i HEAD~3
+    -  先出现一个 vim 模式的文件，选择最近一次为 pick（必须第一个为 pick，否则会报错），其余为 s 表示压缩（同上编辑和保存）
+    - 然后又出现一个 vim 模式文件，选择需要的提交信息，其余注释掉（同上编辑和保存）
+    - 强制更新：git push -f
