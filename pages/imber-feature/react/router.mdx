@@ -1,0 +1,140 @@
+## 配置式路由
+
+新版本路由取消了`History`路由，取而代之的是`BrowserRouter`路由
+
+新版本路由将`Switch`变成了`Routes`,将`component`变成了`element`
+
+普通方案
+
+```tsx
+<Routes>
+    <Route path="/" element={<Home />}></Route>
+    <Route path="/about/:id" element={<About />}></Route>
+</Routes>
+```
+
+#### 方案一
+
+`createBrowserRouter + RouterProvider`
+
+`router>index.tsx`中配置：
+
+```js
+import Layout from '@/components/layout'
+import { lazy } from 'react'
+import { createBrowserRouter } from 'react-router-dom'
+const Home = lazy(() => import('@/pages/home'))
+const router = createBrowserRouter([
+  {
+    path: '/',
+    element: <Layout></Layout>,
+    children: [{ path: '/', element: <Home></Home> }]
+  }
+])
+export default router
+```
+
+`main.tsx`中配置：
+
+```tsx
+import { RouterProvider } from 'react-router-dom'
+import ReactDOM from 'react-dom/client'
+import './global.css'
+import router from './router'
+
+ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
+  <RouterProvider router={router} />
+)
+```
+
+#### 方案二
+
+`useRoutes + BrowserRouter`
+
+`router>index.tsx`
+
+```jsx
+import { lazy } from 'react'
+const Home = lazy(() => import(/* webpackChunkName:"Home" */ '@/pages/home'))
+const routes = [
+  {
+    path: '/',
+    element: <Home />,
+    children: [
+      {
+        default: true,
+        path: '/',
+        element: (
+          <>
+            <Home />
+          </>
+        )
+      }
+    ]
+  }
+]
+export default routes
+```
+
+`App.tsx`中配置：
+
+```jsx
+import { BrowserRouter, useRoutes } from 'react-router-dom'
+import routes from '@/router'
+const App: React.FC = () => {
+  return <BrowserRouter>{useRoutes(routes)}</BrowserRouter>
+}
+
+export default App
+```
+
+## 路由传参
+
+#### params参数
+
+```jsx
+//传递参数
+navigate(`/about/${id})
+...
+<Route path="/about/:id" element={<About />}></Route>
+
+//接收参数
+import { useParams } from 'react-router-dom'
+...
+const { id } = useParams()
+```
+
+#### search参数
+
+```jsx
+//传递参数
+navigate(`/about/${id}?name=imber`)
+...
+<Route path="/about/:id?name=imber" element={<About />}></Route>
+
+//接收参数
+import { useSearchParams } from 'react-router-dom'
+...
+const name = searchParams.get('name')
+```
+
+#### state参数
+
+也就是传一个`state`对象，应该是内存中传递，但是刷新不会丢失参数 
+
+```jsx
+navigate('/list',{ state:'alien' })
+//接收参数
+import { useLocation } from 'react-router-dom'
+...
+const location = useLocation()
+const { age } = location.state
+```
+
+## 其他
+
+`<Outlet/>`
+
+`errorElement`
+
+`loader`
