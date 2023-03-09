@@ -1,0 +1,25 @@
+## 读取上传的图片url
+
+```jsx
+<input type="file" onChange={handleInput} />
+
+const handleInput = (e: { target: { files: Blob[] } }) => {
+const targetType = files[0].type
+  const arr = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp']
+  if (!arr.includes(targetType)) {
+    Toast.show({
+      content: '格式不支持'
+    })
+    return
+  }
+  const files = e.target.files
+  const reader = new FileReader()
+  reader.readAsDataURL(files[0])
+  reader.onloadend = function (e) {
+    // target就是url
+    const target = e.target?.result as string
+  }
+}
+```
+
+## 图片上传阿里云

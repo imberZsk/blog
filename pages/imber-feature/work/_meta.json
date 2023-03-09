@@ -25,5 +25,17 @@
   },
   "project": {
     "title": "项目质量"
+  },
+  "file": {
+    "title": "文件读取"
+  },
+  "axios": {
+    "title": "axios封装"
+  },
+  "node": {
+    "title": "node下载文件里的图片"
+  },
+  "component": {
+    "title": "组件库使用"
   }
 }
