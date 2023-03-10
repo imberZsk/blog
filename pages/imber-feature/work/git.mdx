@@ -3,6 +3,7 @@
 1.  查看提交信息：`git log`（git log --oneline 可以查看简介的提交信息）
 2.  回滚到某次提交(版本回退/回滚本地代码)：`git reset --hard commitid`
 3.  回滚到某次提交：`git revert commitid`
+    - revert 只会取消那次提交
     - 会弹出 vim 模式修改需要的提交信息
     - 按下 i 进入可以输入的 insert 模式，然后修改成要的提交信息
     - 修改完后按 ESC 退出 insert 模式，进入 normal 模式
