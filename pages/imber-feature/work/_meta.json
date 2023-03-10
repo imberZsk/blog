@@ -29,13 +29,16 @@
   "file": {
     "title": "文件读取"
   },
+  "atag": {
+    "title": "元素的位置"
+  },
   "axios": {
     "title": "axios封装"
   },
-  "node": {
-    "title": "node下载文件里的图片"
-  },
   "component": {
     "title": "组件库使用"
+  },
+  "node": {
+    "title": "node下载图片"
   }
 }
