@@ -8,10 +8,10 @@
   "react": {
     "title": "react总结"
   },
-  "gsap": {
-    "title": "gsap"
+  "next": {
+    "title": "next总结"
   },
-  "tailwind": {
-    "title": "tailwind"
+  "animate": {
+    "title": "动画总结"
   }
 }

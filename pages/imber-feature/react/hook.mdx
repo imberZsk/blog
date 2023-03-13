@@ -1,0 +1,47 @@
+## useCallBack
+
+缓存函数，不用重复创建函数，父组件传一个函数到子组件的时候
+
+封装组件的时候容易用到？
+
+## useMemo
+
+缓存值，因为自身也有开销，计算开销大的时候使用
+
+## useReducer
+
+## useContext
+
+## useImpretiveHandle
+
+父组件调用子组件的时候用到，配合`forwardRef`
+
+## 其他
+
+#### React.memo
+
+子组件没有依赖父组件的状态/不渲染父组件传下来的props的时候使用，
+
+当这个组件可以做一个单独的模块的时候使用
+
+#### useState
+
+#### useEffect
+
+#### useRef
+
+useRef 让函数只执行一次
+
+```jsx
+function useConstructor(callback) {
+  const init = useRef(true)
+  if (init.current) {
+    callback()
+    init.current = false
+  }
+}
+```
+
+## ahooks
+
+#### useSafeState

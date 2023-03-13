@@ -40,5 +40,8 @@
   },
   "node": {
     "title": "node下载图片"
+  },
+  "tailwind": {
+    "title": "tailwind"
   }
 }
