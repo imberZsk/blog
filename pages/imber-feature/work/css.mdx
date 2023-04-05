@@ -1,11 +1,24 @@
+## 不常见属性
+
+```css
+颜色反转：filter: invert(1);
+高斯模糊：backdrop-filter: blur(10px);
+*禁止图片拉动：-webkit-user-drag: none;
+html,body禁止文字选中：user-select: none;
+禁用默认样式：all: unset;
+亮度：filter: brightness(0.2);
+整个滚动条：::-webkit-scrollbar
+滚动条轨道：::-webkit-scrollbar-track
+滚动条上的滚动滑块：::-webkit-scrollbar-thumb
+裁剪：clip-path:
+遮罩: mask
+除了最后一个: :not(:last-child)
+元素上有两个类如active,可以写成 .item.active
+```
+
 ## 文字溢出
 
 ```
-/* 单行 */
-overflow: hidden;            // 溢出隐藏
-text-overflow: ellipsis;     // 溢出用省略号显示
-white-space: nowrap;         // 规定段落中的文本不进行换行
-​
 /* 多行 */
 overflow: hidden;            // 溢出隐藏
 text-overflow: ellipsis;     // 溢出用省略号显示
@@ -14,21 +27,7 @@ display:-webkit-box;         // 作为弹性伸缩盒子模型显示。
 -webkit-line-clamp:3;        // 显示的行数
 ```
 
-## 图片的显示
-
-> 1.  图片居中裁剪
-> 2.  图片高斯模糊和饱和度
-> 3.  图片大小压缩
-> 4.  图片懒加载
-> 5.  背景全屏铺满
-
-**居中裁剪:** `object-fit: cover`，我们只需要关注`contain`和`cover`这两个属性，一般`cover`较多
-
-**高斯模糊和饱和度：**
-
-1.  通过请求的图片，后端或运维会让图片经过阿里云处理，如果支持 webp 则会使用 webp 格式和对应压缩，可以在图片的相应头字段 content-type 看到真实的格式
-2.  放本地的图片，对于小图片，会采用 base64，减少 http 请求，大图片不会用 base64 是因为体积会变为原来的 4/3，所以只有小图片合适；一些大图片和 UI 沟通，并可用https://tinify.cn/来压缩图片
-    **图片懒加载**：一般组件库里会自带有方法，原理是用`intersectionObserver`去实现，能极大减少渲染图片压力
+## 背景图片
 
 **背景图片铺满盒子：**
 
@@ -58,106 +57,98 @@ background-size: cover;
 }
 ```
 
-## 外边距重叠
-
-什么时候 margin 会合并（外边距重叠）
-外边距重叠一般有两种情况
-
-- 一种是父子盒子外边距重叠（一般会给父盒子写 padding，所以比较少见，父级用 overflow:hidden 也可以解决）；
-- 一种兄弟盒子外边距重叠（常见），实际开发中容易出现在列表渲染的时候；
-
-![1.png](https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/bbd56eb42b504818a1f574f45189f2bd~tplv-k3u1fbpfcp-watermark.image?)
-
-兄弟外边距重叠
-
-- 兄弟两个盒子的`margin`都设为需要间隔的`px`，也就是如果上下两个兄弟如果需要`10px`的间隙，就给两个盒子都设置`10px`的`margin`值
-- 给两个盒子外面套一层`div`，并给这个`div`设为**BFC**，如`overflow:hidden`，原理是**BFC**特性：属于不同**BFC**的两个元素不会发生边距重叠
-
-## 文字和图片对齐
-
-文字和图片默认是以`baseline`基线对齐，也就是与 x 字母底部对齐（如果只考虑小写字母，则只需要给图片`vertical-align:middle`就可以了，但是开发常常考虑的是文字和数字，所以这种情况忽略）：
-
-![2.png](https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/bd4dfb24b0084b0996534629de269976~tplv-k3u1fbpfcp-watermark.image?)
-
-解决方案：
-
-- 使用 flex 布局
-- ```
-  display: flex;
-  align-items: center;
-  ```
-
-## 文本换行左侧靠齐
-
-用 flex 的时候，又需要换行的时候，容易遇到这种情况，遇到这种情况就不适合 flex，用 grid，grid yyds
-
-张旭鑫文章里有多种解决方案，[传送门](https://www.zhangxinxu.com/wordpress/2019/08/css-flex-last-align/)
-
-## 粘性布局
-
-普通粘性布局（注意父元素不能**overflow:hidden**或者`没有设置高度`否则会失效）：
-
-```
-{
-  position: sticky;
-  top: 0;
-}
-```
-
-到达顶部就悬浮，如果屏幕较小，内容又多超过屏幕可视区，则以底部为准，如[weibo.com](weibo.com)右侧效果
-
-动态计算高度是否超过屏幕高度来布局，给个伪代码：
-
-```
-useEffect(() => {
-  // 用js获取盒子的高度，如果高度小于window.innerHeight的高度，则sticky，否则用了sticky后，还需要设置top:盒子高度-window.innerHeight
-  if (fixRef.current.clientHeight < window.innerHeight) {
-  } else {
-  //需要的top值
-   window.innerHeight - fixRef.current.clientHeight
-  }
-}, [])
-```
-
-## 全屏滚动布局
-
-```
-scroll-snap-type: y mandatory; /*设置父级*/
-scroll-snap-align: center; /*子级设置*/
-```
-
-## 测试写 react 组件
+## box-shadow
 
 ```jsx
-import { useState } from 'react'
+/_ x 偏移量 | y 偏移量 | 阴影模糊半径 | 阴影扩散半径 | 阴影颜色 _/
+box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
 
-export function Counter({ children }) {
-  const [count, setCount] = useState(0)
-  return (
-    <button onClick={() => setCount(count + 1)}>
-      {children}
-      {count}
-    </button>
-  )
-}
+box-shadow有以下属性：
 
-;<Counter>**Clicks**: </Counter>
+inset：用于指定阴影是否为内阴影。
+h-offset：用于指定水平偏移量。
+v-offset：用于指定垂直偏移量。
+blur-radius：用于指定模糊半径。
+spread-radius：用于指定阴影的扩展半径。
+color：用于指定阴影的颜色。
+可以使用逗号分隔多个阴影，每个阴影之间用空格分隔。例如：
+
+box-shadow: 2px 2px 10px #888888, -2px -2px 10px #888888;
 ```
 
-import { useState } from 'react'
+## animation
 
-export function Counter({ children }) {
-  const [count, setCount] = useState(0)
-  return (
-    <button onClick={() => setCount(count + 1)}>
-      {children}
-      {count}
-    </button>
-  )
+```jsx
+animation-name：指定要使用的@keyframes规则的名称。
+animation-duration：指定动画的持续时间。
+animation-timing-function：指定动画的缓动函数，用于控制动画的速度变化。
+animation-delay：指定动画开始执行的延迟时间。
+animation-iteration-count：指定动画应该重复执行的次数。
+animation-direction：指定动画循环时的方向。
+animation-fill-mode：指定动画在执行前和执行后的样式状态。
+animation-play-state：指定动画的播放状态，用于控制动画的暂停和播放。
+以下是一个示例animation属性的代码：
+
+div {
+  animation-name: slide-in;
+  animation-duration: 1s;
+  animation-timing-function: ease-out;
+  animation-delay: 0s;//开始执行
+  animation-iteration-count: infinite;//重复执行无数次
+  animation-direction: alternate;//交替执行
+  animation-fill-mode: forwards;//保留最后一帧的状态
+  animation-play-state: running;//正在播放
 }
+```
 
-<div className="p-4 border border-gray-200 dark:border-gray-900 rounded mt-6">
-  <>
-    <Counter>**Clicks**: </Counter>
-  </>
-</div>
+## linear-gradient()
+
+## flex
+
+flex-grow 默认值为 0 不可以拉伸，flex-shrink 默认值为 1 可以收缩，flex-basis 默认值是 auto
+
+也就是 flex: initial === flex 0 1 auto，这个默认值让项目较少时不会去填充满剩余空间，项目较多时文字能换行，还有一个常见的是`flex: 1 === flex:1 1 0%`
+
+flex 容器有剩余空间时尺寸不会增长（flex-grow:0），flex 容器尺寸不足时尺寸会收缩变小（flex-shrink:1），尺寸自适应于内容（flex-basis:auto）（行为类似 fit-content）。如果 flex-basis:0%，则为忽略自身宽度。
+
+```js
+console.log(getComputedStyle(document.body).flexGrow) //flex-grow默认值为0
+console.log(getComputedStyle(document.body).flexShrink) //flex-shrink默认值为1
+console.log(getComputedStyle(document.body).flexBasis) //flex-basis默认值是auto
+```
+
+flex 使元素被挤压
+
+![](./flex1.png)
+
+解决方案
+
+```css
+/* 在按钮上加 */
+.btn {
+  /* ...之前的代码 */
+  flex-shrink: 0;
+  /* 或者 */
+  flex: none;
+}
+/* 或者在内容上加 */
+.content {
+  flex: 1;
+}
+```
+
+flex 是文字溢出省略号显示失效
+
+![](./flex2.jpeg)
+
+解决方案
+
+去掉 flex，如果高度不对，可以自己写行高
+
+## getBoundingClientRect
+
+![](./atag.jpg)
+
+## 元素位置
+
+![](./atag2.png)

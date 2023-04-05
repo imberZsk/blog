@@ -20,15 +20,29 @@
 `router>index.tsx`中配置：
 
 ```js
-import Layout from '@/components/layout'
-import { lazy } from 'react'
-import { createBrowserRouter } from 'react-router-dom'
+import Base from '@/components/base'
+import FallBack from '@/components/fallback'
+import { lazy, Suspense } from 'react'
+import { createBrowserRouter, Outlet } from 'react-router-dom'
 const Home = lazy(() => import('@/pages/home'))
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <Layout></Layout>,
-    children: [{ path: '/', element: <Home></Home> }]
+    element: (
+      <Suspense fallback={<FallBack></FallBack>}>
+        <Outlet />
+      </Suspense>
+    ),
+    children: [
+      {
+        path: '/',
+        element: <Home></Home>
+      },
+      {
+        path: '/base',
+        element: <Base></Base>
+      }
+    ]
   }
 ])
 export default router

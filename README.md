@@ -1,4 +1,4 @@
-# Nextra Docs Template 
+# Nextra Docs Template
 
 This is a template for creating documentation with [Nextra](https://nextra.site).
 
@@ -21,3 +21,5 @@ Then, run `pnpm dev` to start the development server and visit localhost:3000.
 ## License
 
 This project is licensed under the MIT License.
+
+- 感兴趣的点：next, 调试，组件库，源码，算法，单测

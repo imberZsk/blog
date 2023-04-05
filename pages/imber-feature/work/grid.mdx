@@ -107,6 +107,47 @@ return (
 }
 ```
 
+## 常见二维布局
+
+![](./img_grid5.jpg)
+
+#### tailwind
+
+```jsx
+<div className="h-screen py-52">
+  <ul className="w-[980px] margin-center grid gap-6 grid-cols-3 auto-rows-[360px]">
+    <li className="col-span-2 rounded-3xl overflow-hidden" ref={s1Ref}>
+      <video
+        src={screen1[0].url}
+        autoPlay
+        muted
+        loop
+        playsInline
+        className="h-full w-full object-cover"
+      ></video>
+    </li>
+    <li className="row-span-2 rounded-3xl overflow-hidden">
+      <video
+        src={screen1[1].url}
+        autoPlay
+        muted
+        loop
+        playsInline
+        className="h-full w-full object-cover"
+      ></video>
+    </li>
+    <li
+      className="rounded-3xl bg-cover overflow-hidden"
+      style={{ backgroundImage: `url(${screen1[2].url})` }}
+    ></li>
+    <li
+      className="rounded-3xl bg-cover overflow-hidden"
+      style={{ backgroundImage: `url(${screen1[3].url})` }}
+    ></li>
+  </ul>
+</div>
+```
+
 ## 响应式布局
 
 不确定容器宽高
