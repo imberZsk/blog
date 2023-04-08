@@ -32,9 +32,6 @@
   "axios": {
     "title": "axios封装"
   },
-  "component": {
-    "title": "组件库使用"
-  },
   "node": {
     "title": "node下载图片"
   },
