@@ -32,6 +32,12 @@
 
 控制台跑`lighthouse`，浏览器会给你分析影响性能的因素和给出一些性能指标，我们可以从中发现性能瓶颈，比如 C 端网站如果图片多，性能瓶颈往往是图片问题
 
+可能遇到的问题
+
+- 图片大小/图片格式webp
+- 未使用的js/css
+- dom总数过多
+
 ## 图片压缩
 
 通过阿里云转`webp`等手段，往往需要后端或者运维去处理，我们前端只需要看一下压缩后的大小，兼容性问题
@@ -106,3 +112,25 @@ CSR：
 ![截屏2022-11-15 20.45.30.png](https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/a4a8f848941248c6ab8327873ad7874e~tplv-k3u1fbpfcp-watermark.image?)
 
 csr 从一开始请求到了 html，再去请求对应的 js，再去请求 js 请求接口，请求回来再 append 拼接 dom，而服务端渲染跑服务端代码拼接完整的 dom 返回，相比之下速度快很多
+
+## Web Vitals
+
+>  https://web.dev/vitals/
+>
+> 前三个为core web vitals
+
+#### LCP(largest contentful paint)
+
+最大内容绘制，测量加载性能表示页面中最大的可见元素（如图片/视频）加载完成的时间，LCP需要在2.5s内完成，否则影响用户体验(不是很靠谱)
+
+#### FID(first input delay)
+
+首次输入延迟，测量*交互性*。为了提供良好的用户体验，页面的 FID 应为**100 毫秒**或更短
+
+#### CLS(cumulative layout shift)
+
+累积布局偏移，测量*视觉稳定性*。为了提供良好的用户体验，页面的 CLS 应保持在 **0.1.** 或更少
+
+#### FCP(first contentful paint)
+
+首次内容绘制 (FCP) 指标测量页面从开始加载到页面内容的任何部分在屏幕上完成渲染的时间。对于该指标，"内容"指的是文本、图像（包括背景图像）、`<svg>`元素或非白色的`<canvas>`元素
