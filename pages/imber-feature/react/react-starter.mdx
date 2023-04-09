@@ -244,7 +244,7 @@
   }
   ```
 
-#### 配置 vite
+#### 配置 vite（代理/别名等）
 
 - 一些方便开发的配置
 
@@ -262,7 +262,14 @@
     plugins: [react()],
     server: {
       // 自动打开浏览器
-      open: true
+      open: true，
+      proxy: {
+        '/api': {
+          target: 'https://xxxxxx',
+          changeOrigin: true,
+          rewrite: (path) => path.replace(/^\/api/, '')
+        }
+      }
     },
     resolve: {
       // 配置别名

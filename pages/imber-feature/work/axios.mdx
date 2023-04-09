@@ -1,86 +1,145 @@
+## request.ts
+
 ```ts
 import axios from 'axios'
-import type {
-  AxiosError,
-  AxiosInstance,
-  AxiosRequestConfig,
-  AxiosResponse,
-  InternalAxiosRequestConfig
-} from 'axios'
-
-interface Result<T> {
-  code: number
-  message: string
-  data: T
-}
+import { AxiosInstance } from 'axios'
+import { errorHandle, processData, successHandle } from './resInterceptions'
+import { defaultRequestInterception } from './reqInterceptions'
+const TIMEOUT = 5 * 1000
 
 class Request {
   instance: AxiosInstance
-  baseConfig: AxiosRequestConfig = {
-    baseURL: import.meta.env.VITE_BASE_URL,
-    timeout: 20 * 1000
+  constructor() {
+    this.instance = axios.create()
+    this.init()
   }
 
-  constructor(config: AxiosRequestConfig) {
-    this.instance = axios.create(Object.assign(this.baseConfig, config))
-
-    this.instance.interceptors.request.use(
-      (config: InternalAxiosRequestConfig) => {
-        // TODO: 全局请求拦截器
-        return config
-      },
-      (err: AxiosError) => {
-        return Promise.reject(err)
-      }
-    )
-
-    this.instance.interceptors.response.use(
-      (res: AxiosResponse) => {
-        // TODO: 全局响应拦截,暂定数据都在res.data里
-        return res.data
-      },
-      (err: AxiosError) => {
-        // TODO: 一些状态码处理，全局提示，例如500服务器错误
-        return Promise.reject(err)
-      }
-    )
+  private init() {
+    this.setDefaultConfig()
+    this.reqInterceptions()
+    this.resInterceptions()
   }
-
-  public request(config: InternalAxiosRequestConfig): Promise<AxiosResponse> {
-    return this.instance.request(config)
+  private setDefaultConfig() {
+    this.instance.defaults.baseURL = import.meta.env.VITE_BASE_URL
+    this.instance.defaults.timeout = TIMEOUT
   }
-
-  public get<T = any>(
-    url: string,
-    config?: AxiosRequestConfig
-  ): Promise<AxiosResponse<Result<T>>> {
-    return this.instance.get(url, config)
+  private reqInterceptions() {
+    this.instance.interceptors.request.use(defaultRequestInterception)
   }
-
-  public post<T = any>(
-    url: string,
-    data?: any,
-    config?: AxiosRequestConfig
-  ): Promise<AxiosResponse<Result<T>>> {
-    return this.instance.post(url, data, config)
-  }
-
-  public put<T = any>(
-    url: string,
-    data?: any,
-    config?: AxiosRequestConfig
-  ): Promise<AxiosResponse<Result<T>>> {
-    return this.instance.put(url, data, config)
-  }
-
-  public delete<T = any>(
-    url: string,
-    config?: AxiosRequestConfig
-  ): Promise<AxiosResponse<Result<T>>> {
-    return this.instance.delete(url, config)
+  private resInterceptions() {
+    this.instance.interceptors.response.use(processData)
+    this.instance.interceptors.response.use(successHandle, errorHandle)
   }
 }
 
-export default Request
-
+export default new Request().instance
 ```
+
+## reqInterceptions.ts
+
+```ts
+import type { InternalAxiosRequestConfig } from 'axios'
+
+const defaultRequestInterception = (config: InternalAxiosRequestConfig) => {
+  // TODO: 全局请求拦截器: 添加token
+  return config
+}
+
+export { defaultRequestInterception }
+```
+
+## resInterceptions.ts
+
+```tsx
+import { AxiosError, AxiosResponse } from 'axios'
+import { checkStatus } from './checkStatus'
+
+const processData = (res: AxiosResponse) => {
+  // TODO:统一处理数据结构
+  return res.data
+}
+
+const successHandle = (res: AxiosResponse) => {
+  // TODO:处理一些成功回调，例如请求进度条
+  return res.data
+}
+
+const errorHandle = (err: AxiosError) => {
+  if (err.status) checkStatus(err.status)
+  else return Promise.reject(err)
+}
+
+export { processData, successHandle, errorHandle }
+```
+
+## checkStatus.ts
+
+```ts
+export function checkStatus(status: number, msg?: string): void {
+  let errMessage = ''
+
+  switch (status) {
+    case 400:
+      errMessage = `${msg}`
+      break
+    case 401:
+      break
+    case 403:
+      errMessage = ''
+      break
+    // 404请求不存在
+    case 404:
+      errMessage = ''
+      break
+    case 405:
+      errMessage = ''
+      break
+    case 408:
+      errMessage = ''
+      break
+    case 500:
+      errMessage = ''
+      break
+    case 501:
+      errMessage = ''
+      break
+    case 502:
+      errMessage = ''
+      break
+    case 503:
+      errMessage = ''
+      break
+    case 504:
+      errMessage = ''
+      break
+    case 505:
+      errMessage = ''
+      break
+    default:
+  }
+  if (errMessage) {
+    // TODO:错误提示
+    // createErrorModal({title: errMessage})
+  }
+}
+```
+
+## api.ts
+
+```ts
+import request from '@/services/axios/request'
+import { ReqTitle } from './type'
+
+export const requestTitle = (): Promise<ReqTitle> => {
+  return request.get('/api/一个获取title的接口')
+}
+```
+
+## type.ts
+
+```ts
+export type ReqTitle = {
+  title: string
+}
+```
+
