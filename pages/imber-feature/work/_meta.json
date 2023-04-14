@@ -2,11 +2,8 @@
   "css": {
     "title": "css布局"
   },
-  "grid": {
-    "title": "grid布局"
-  },
   "git": {
-    "title": "git工作流"
+    "title": "git常用指令"
   },
   "swiper": {
     "title": "swiper库"
