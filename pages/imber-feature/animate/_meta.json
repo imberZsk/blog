@@ -4,14 +4,5 @@
   },
   "react-spring": {
     "title": "react spring"
-  },
-  "scrollmagic": {
-    "title": "scrollmagic"
-  },
-  "keyframe": {
-    "title": "原生css动画"
-  },
-  "word-show": {
-    "title": "文字渐显效果"
   }
 }

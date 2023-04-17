@@ -1,4 +1,4 @@
-## git 常用指令
+## git指令
 
 1.  查看提交信息：`git log`（git log --oneline 可以查看简介的提交信息）
 2.  回滚到某次提交(版本回退/回滚本地代码)：`git reset --hard commitid`
@@ -21,7 +21,13 @@
     - 然后又出现一个 vim 模式文件，选择需要的提交信息，其余注释掉（同上编辑和保存）
     - 强制更新：git push -f
 
-## css变量
+## 主题切换
+
+> 如果之前有设置过颜色用之前设置的主题色，在localStorage里看是否有主题变量保存
+>
+> 否则查询系统色，如果有匹配到暗色，使用暗色，否则默认白色
+
+
 
 新建一个`theme.ts`，引入`index.tsx`
 
@@ -42,11 +48,7 @@
 }
 ```
 
-## 主题切换
 
-> 如果之前有设置过颜色用之前设置的主题色，在localStorage里看是否有主题变量保存
->
-> 否则查询系统色，如果有匹配到暗色，使用暗色，否则默认白色
 
 ```js
 // 切换为白色主题
@@ -104,7 +106,7 @@ export const toggleTheme = () => {
 }
 ```
 
-## 读取上传的图片 url
+## 文件读取
 
 ```jsx
 <input type="file" onChange={handleInput} />
@@ -128,7 +130,7 @@ const targetType = files[0].type
 }
 ```
 
-## node 下载 csv
+## node下载csv
 
 用这个网站把 csv 转为 json,再用 nodefs 和 http 模块下载，https://tableconvert.com/csv-to-json
 

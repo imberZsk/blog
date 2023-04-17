@@ -2,11 +2,8 @@
   "css": {
     "title": "css布局"
   },
-  "git": {
-    "title": "git常用指令"
-  },
   "swiper": {
-    "title": "一些库的使用"
+    "title": "一些库"
   },
   "theme": {
     "title": "一些功能"
