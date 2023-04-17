@@ -6,33 +6,18 @@
     "title": "git常用指令"
   },
   "swiper": {
-    "title": "swiper库"
-  },
-  "videojs": {
-    "title": "videojs库"
-  },
-  "canvas": {
-    "title": "canvas画图"
+    "title": "一些库的使用"
   },
   "theme": {
-    "title": "主题换肤"
+    "title": "一些功能"
   },
   "project": {
     "title": "项目质量"
-  },
-  "file": {
-    "title": "文件读取"
   },
   "atag": {
     "title": "元素的位置"
   },
   "axios": {
     "title": "axios封装"
-  },
-  "node": {
-    "title": "node下载图片"
-  },
-  "tailwind": {
-    "title": "tailwind"
   }
 }
