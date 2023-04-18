@@ -128,6 +128,7 @@ navigate(`/about/${id}?name=imber`)
 
 //接收参数
 import { useSearchParams } from 'react-router-dom'
+const [searchParams] = useSearchParams()
 ...
 const name = searchParams.get('name')
 ```
