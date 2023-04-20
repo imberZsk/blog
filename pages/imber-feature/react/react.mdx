@@ -1,0 +1,11 @@
+## React最佳实践
+
+- 避免传递不必要的的props，props应该只传子组件使用的部分，不要整个数据都传递防止占用内存过多
+
+- 不能使用`arr.length&&<Component />`，0虽然为假值，但仍然会被渲染，应该写成`arr.length > 0&&<Component />`
+
+- 不要写`data&&data.map()`，应该使用可选链`data?.map()`
+- 用hooks复用逻辑，把方法提取出去，在你等jsx里只需要 `const {xxx} = useXXX()`，然后渲染xxx就好了，也就是在jsx中应该看到不多的js代码
+- 利用`useReducer和context`来集中管理状态，且尽量少使用state，state改变导致页面刷新消耗性能
+
+- 遇到嵌套过多的情况，考虑用children来组装
