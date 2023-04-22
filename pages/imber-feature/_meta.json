@@ -1,17 +1,17 @@
 {
-  "index": {
-    "title": "待写的事项"
-  },
-  "work": {
-    "title": "业务功能"
-  },
   "react": {
-    "title": "react总结"
+    "title": "react"
   },
   "next": {
-    "title": "next总结"
+    "title": "next"
   },
   "animate": {
-    "title": "动画总结"
+    "title": "animate"
+  },
+  "feature": {
+    "title": "feature"
+  },
+  "todo": {
+    "title": "todo"
   }
 }

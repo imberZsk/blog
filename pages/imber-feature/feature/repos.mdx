@@ -77,8 +77,6 @@ export default Slider
 >
 > Vue: https://videojs.com/guides/vue/
 
-
-
 api
 
 ```jsx
@@ -217,18 +215,6 @@ html2canvas(document.querySelector('#coverpic') as HTMLElement, {
 })
 ```
 
-## pinch-zoom-js
-
-```js
-import PinchZoom from 'pinch-zoom-js'
-
-const el = document.querySelector('#img1') as HTMLElement
-const pz = new PinchZoom(el, {
-  zoomOutFactor: 0.3 //缩放低于这个值的时候调整为原始大小
-})
-pz.enable()
-```
-
 ## magic-grid
 
 ```jsx
@@ -243,4 +229,3 @@ const magicGrid = new MagicGrid({
 })
 magicGrid.listen()
 ```
-
