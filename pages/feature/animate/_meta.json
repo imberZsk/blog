@@ -1,8 +1,8 @@
 {
   "gsap": {
-    "title": "gsap"
+    "title": "react gsap"
   },
-  "react-spring": {
+  "spring": {
     "title": "react spring"
   }
 }

@@ -3,8 +3,8 @@
     "title": "Home",
     "type": "page"
   },
-  "imber-feature": {
-    "title": "DOCS",
+  "feature": {
+    "title": "Docs",
     "type": "page"
   },
   "showcase": {

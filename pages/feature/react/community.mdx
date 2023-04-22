@@ -8,8 +8,8 @@
 
 ```tsx
 <Routes>
-    <Route path="/" element={<Home />}></Route>
-    <Route path="/about/:id" element={<About />}></Route>
+  <Route path="/" element={<Home />}></Route>
+  <Route path="/about/:id" element={<About />}></Route>
 </Routes>
 ```
 
@@ -104,7 +104,7 @@ export default App
 
 ## 路由传参
 
-#### params参数
+#### params 参数
 
 ```jsx
 //传递参数
@@ -118,7 +118,7 @@ import { useParams } from 'react-router-dom'
 const { id } = useParams()
 ```
 
-#### search参数
+#### search 参数
 
 ```jsx
 //传递参数
@@ -133,9 +133,9 @@ const [searchParams] = useSearchParams()
 const name = searchParams.get('name')
 ```
 
-#### state参数
+#### state 参数
 
-也就是传一个`state`对象，应该是内存中传递，但是刷新不会丢失参数 
+也就是传一个`state`对象，应该是内存中传递，但是刷新不会丢失参数
 
 ```jsx
 navigate('/list',{ state:'alien' })
@@ -148,7 +148,7 @@ const { age } = location.state
 
 ## 其他
 
-`<Outlet/>`，如果Outlet外层没有包裹Suspence，会导致页面重新刷新！！！
+`<Outlet/>`，如果 Outlet 外层没有包裹 Suspence，会导致页面重新刷新！！！
 
 `errorElement`
 

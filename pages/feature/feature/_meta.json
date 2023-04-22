@@ -2,6 +2,9 @@
   "css": {
     "title": "css"
   },
+  "axios": {
+    "title": "axios"
+  },
   "repos": {
     "title": "repos"
   },
@@ -13,8 +16,5 @@
   },
   "position": {
     "title": "position"
-  },
-  "axios": {
-    "title": "axios"
   }
 }
