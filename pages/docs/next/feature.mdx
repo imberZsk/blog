@@ -3,7 +3,7 @@
 - react 写得不规范容易报错卡死，react 风格较多不同人写的代码可能天差地别，react 容易出现性能问题比如重复渲染等情况，vue 不用太关注性能问题，可以把组件分细一点
 - 因为 hooks 基于单链网页容易挂，缺少依赖等情况容易出现无限循环
 
-## Nextjs
+## Nextjs概念
 
 SSR 框架有这几类比较出名，基于 Angular 的 Angular Universal(3.9k star)，基于 Vue 的 Nuxt.js(41.8k star)，和基于 React 的 Nextjs(98.7k star)，相信如果使用 SSR 框架的话，Nextjs 一定是首选
 
@@ -17,12 +17,12 @@ SSR 框架有这几类比较出名，基于 Angular 的 Angular Universal(3.9k s
 功能
 
 - 开箱即用 sass/css module，基于文件的路由
-- 内置标签：Head，Image，Scipt 等
+- 内置标签：Head，Image，Script 等
 - 数据传递函数：getStaticProps 和 getStaticPaths，getServerSideProps 和 getInitialProps
 - 钩子：useRouter
 - API 路由
 
-## Nextjs 相对于 React 项目有什么好处？
+## Nextjs 好处
 
 SSR 不是一个新技术，早些时候是用 php/jsp 做服务端渲染，然后变成 vue/react 客户端渲染，那为什么又回到服务端渲染了呢？
 
@@ -31,3 +31,126 @@ SSR 不是一个新技术，早些时候是用 php/jsp 做服务端渲染，然�
 - SSG 静态站点生成：当每个用户看到的都是一样的静态页面，`SSG` 只在打包的时候构建一次生成一个 `HTML`
 - 相比于老技术模版渲染，`Nextjs` 能给我们 `SPA` 一样的开发体验，还能使用客户端路由功能
 - ...
+
+## 注意点
+
+- 不能在pages里面使用别的文件，比如`hooks.ts、const.ts`，开发不会有错，打包会有错
+- 如果本地有图片要放在public目录下，引入的时候直接`/xxx.jpg`
+- 如`getServerSideProps`在服务端上运行代码console只能在终端看到
+
+## 搭建
+
+官网搭建后，需要自己集成prettier，husky等（参考react搭建就可以），eslint规则不是很够，新增几个实用的
+
+```json
+"rules": {
+  "no-unused-vars": "error",//禁止未使用的变量
+  "no-var": "error",//禁止var
+  "no-console": "warn",//警告console
+  "no-empty-function": "error"//函数不能为空
+}
+```
+
+封装通用的头部
+
+
+
+Components
+
+```tsx
+import type { NextPage } from 'next'
+import Header from '../header'
+import { ReactNode } from 'react'
+
+type Props = {
+  children: ReactNode
+}
+
+const Layout: NextPage<Props> = ({ children }) => {
+  return (
+    <>
+      <Header />
+      <main>{children}</main>
+    </>
+  )
+}
+
+export default Layout
+```
+
+_app.tsx
+
+```tsx
+export default function App({ Component, pageProps }: AppProps) {
+  return (
+    <Layout>
+      <Component {...pageProps} />
+    </Layout>
+  )
+}
+```
+
+## 多语言
+
+Next有内置多语言
+
+```js
+const nextConfig = {
+  i18n: {
+    locales: ['cn', 'en'],
+    defaultLocale: 'cn'
+  }
+}
+```
+
+使用
+
+```tsx
+export const getServerSideProps = async (content) => {
+  console.log(
+    content.locale,
+    content.locales,
+    content.defaultLocale
+  )
+  return {
+    props: {}
+  }
+}
+```
+
+## getServerSideProps
+
+> 这几个函数都只能在页面组件使用，老版本9.3之前是用`getInitialProps`，新版本用`getServerSideProps`
+
+```tsx
+interface Obj {
+  name: string
+}
+
+interface Props {
+  data: Obj
+}
+
+const Introduce: NextPage<Props> = ({ data }) => {}
+
+export const getServerSideProps = async () => {
+  return {
+    props: { data: { name: 'imber' } }
+  }
+}
+```
+
+## getStaticProps 和 getStaticPaths
+
+> 上面是SSR，这个是SSG，同样只能页面组件使用
+
+```
+
+```
+
+## useRouter
+
+```
+
+```
+
