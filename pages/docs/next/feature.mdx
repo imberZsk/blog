@@ -154,3 +154,15 @@ export const getServerSideProps = async () => {
 
 ```
 
+## 异步加载
+
+```tsx
+useEffect(() => {
+  const init = async () => {
+    const ScrollTrigger = await import('gsap/ScrollTrigger')
+    gsap.registerPlugin(ScrollTrigger)
+  }
+  init()
+}, [])
+```
+
