@@ -3,7 +3,7 @@
 - react 写得不规范容易报错卡死，react 风格较多不同人写的代码可能天差地别，react 容易出现性能问题比如重复渲染等情况，vue 不用太关注性能问题，可以把组件分细一点
 - 因为 hooks 基于单链网页容易挂，缺少依赖等情况容易出现无限循环
 
-## Nextjs概念
+## Nextjs 概念
 
 SSR 框架有这几类比较出名，基于 Angular 的 Angular Universal(3.9k star)，基于 Vue 的 Nuxt.js(41.8k star)，和基于 React 的 Nextjs(98.7k star)，相信如果使用 SSR 框架的话，Nextjs 一定是首选
 
@@ -34,13 +34,13 @@ SSR 不是一个新技术，早些时候是用 php/jsp 做服务端渲染，然�
 
 ## 注意点
 
-- 不能在pages里面使用别的文件，比如`hooks.ts、const.ts`，开发不会有错，打包会有错
-- 如果本地有图片要放在public目录下，引入的时候直接`/xxx.jpg`
-- 如`getServerSideProps`在服务端上运行代码console只能在终端看到
+- 不能在 pages 里面使用别的文件，比如`hooks.ts、const.ts`，开发不会有错，打包会有错
+- 如果本地有图片要放在 public 目录下，引入的时候直接`/xxx.jpg`
+- 如`getServerSideProps`在服务端上运行代码 console 只能在终端看到
 
 ## 搭建
 
-官网搭建后，需要自己集成prettier，husky等（参考react搭建就可以），eslint规则不是很够，新增几个实用的
+官网搭建后，需要自己集成 prettier，husky 等（参考 react 搭建就可以），eslint 规则不是很够，新增几个实用的
 
 ```json
 "rules": {
@@ -53,7 +53,7 @@ SSR 不是一个新技术，早些时候是用 php/jsp 做服务端渲染，然�
 
 封装通用的头部
 
-
+如果一些页面不需要套 layout，可以在组件上挂属性（因为组件也是一个对象），还可以通过 getStaticPath 传参数
 
 Components
 
@@ -78,7 +78,7 @@ const Layout: NextPage<Props> = ({ children }) => {
 export default Layout
 ```
 
-_app.tsx
+\_app.tsx
 
 ```tsx
 export default function App({ Component, pageProps }: AppProps) {
@@ -92,7 +92,7 @@ export default function App({ Component, pageProps }: AppProps) {
 
 ## 多语言
 
-Next有内置多语言
+Next 有内置多语言
 
 ```js
 const nextConfig = {
@@ -107,11 +107,7 @@ const nextConfig = {
 
 ```tsx
 export const getServerSideProps = async (content) => {
-  console.log(
-    content.locale,
-    content.locales,
-    content.defaultLocale
-  )
+  console.log(content.locale, content.locales, content.defaultLocale)
   return {
     props: {}
   }
@@ -120,7 +116,7 @@ export const getServerSideProps = async (content) => {
 
 ## getServerSideProps
 
-> 这几个函数都只能在页面组件使用，老版本9.3之前是用`getInitialProps`，新版本用`getServerSideProps`
+> 这几个函数都只能在页面组件使用，老版本 9.3 之前是用`getInitialProps`，新版本用`getServerSideProps`
 
 ```tsx
 interface Obj {
@@ -142,7 +138,7 @@ export const getServerSideProps = async () => {
 
 ## getStaticProps 和 getStaticPaths
 
-> 上面是SSR，这个是SSG，同样只能页面组件使用
+> 上面是 SSR，这个是 SSG，同样只能页面组件使用
 
 ```
 
@@ -165,4 +161,3 @@ useEffect(() => {
   init()
 }, [])
 ```
-
