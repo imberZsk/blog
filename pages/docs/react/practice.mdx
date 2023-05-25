@@ -6,6 +6,6 @@
 
 - 不要写`data&&data.map()`，应该使用可选链`data?.map()`
 - 用 hooks 复用逻辑，把方法提取出去，在你等 jsx 里只需要 `const {xxx} = useXXX()`，然后渲染 xxx 就好了，也就是在 jsx 中应该看到不多的 js 代码
-- 利用`useReducer和context`来集中管理状态，且尽量少使用 state，state 改变导致页面刷新消耗性能
+- 利用`useReducer和context`来集中管理状态，且尽量少使用 state，state 改变导致页面刷新消耗性能，但复杂一点的时候不太好管理，这个时候再用状态管理
 
 - 遇到嵌套过多的情况，考虑用 children 来组装

@@ -30,13 +30,54 @@ export default Home
   background-color: pink;
 }
 ```
+## gsap 封装动画
+
+```jsx
+// 通用单模块渐入效果
+export const useSingleFadeIn = () => {
+  useEffect(() => {
+    const timeline = document.querySelectorAll('.singleFadeIn')
+    const intersectionObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        const target = entry.target as HTMLDivElement
+        const gsapConfig = {
+          y: target.dataset.y,
+          x: target.dataset.x,
+          opacity: 0,
+          scale: target.dataset.scale
+        }
+        const scrollConfig = {
+          trigger: target,
+          start: target.dataset.start || '0% 90%',
+          end: target.dataset.end || '0% 90%',
+          toggleActions: 'play none reverse none'
+        }
+        if (entry.isIntersecting) {
+          gsap.from(target, gsapConfig)
+          intersectionObserver.unobserve(entry.target)
+        }
+        if (!entry.isIntersecting) {
+          const tween = gsap.timeline({
+            scrollTrigger: scrollConfig
+          })
+          tween.from(target, gsapConfig)
+        }
+        intersectionObserver.unobserve(target)
+      })
+    })
+    timeline.forEach((item) => {
+      intersectionObserver.observe(item)
+    })
+  }, [])
+}
+```
 
 ## 注意事项
 
 - 图片这种资源一定要有宽高
 - 一定要在初始的时候能让 gsap 设置动画
 
-# 注意点
+## 注意点
 
 图片需要设置宽高，否则影响 gsap 设置动画
 
@@ -44,7 +85,7 @@ export default Home
 
 在组件卸载时清除 scrollTrigger 动画 kill
 
-# 实例上的方法
+## 实例上的方法
 
 to：将元素从当前状态动画到指定状态。
 
@@ -76,7 +117,7 @@ eventCallback：设置动画实例的回调函数。
 
 addLabel
 
-# timeline
+## timeline
 
 duration：动画持续时间
 
@@ -118,7 +159,7 @@ onUpdateParams：动画更新时的回调函数参数
 
 onCompleteParams：动画完成时的回调函数参数。
 
-# scrollTrigger
+## scrollTrigger
 
 trigger：触发 ScrollTrigger 的元素或选择器
 

@@ -1,8 +1,5 @@
 {
   "gsap": {
     "title": "react gsap"
-  },
-  "spring": {
-    "title": "react spring"
   }
 }
