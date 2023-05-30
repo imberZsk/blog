@@ -1,17 +1,23 @@
 {
+  "starter": {
+    "title": "react脚手架"
+  },
+  "hook": {
+    "title": "react hooks"
+  },
   "react": {
-    "title": "react"
+    "title": "聊聊react"
   },
   "next": {
-    "title": "next"
+    "title": "聊聊nextjs"
+  },
+  "git": {
+    "title": "git工作流"
   },
   "animate": {
-    "title": "animate"
+    "title": "酷炫动画"
   },
-  "feature": {
-    "title": "feature"
-  },
-  "todo": {
-    "title": "todo"
+  "optimize": {
+    "title": "性能优化"
   }
 }

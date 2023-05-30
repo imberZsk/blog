@@ -1,0 +1,75 @@
+> 基础的hook就不说了，useState、useEffect、useRef
+
+## useCallBack和useMemo
+
+useMemo用于缓存值，useCallback用于缓存函数，他们自身也有性能开销，滥用反而造成性能浪费
+
+
+
+其实是用来帮助React.memo浅比较的，父组件更新，让子组件浅比较如果满足条件则不用更新
+
+
+
+当使用自定义hook的时候，如果要返回函数，也可以包一层useCallback
+
+
+
+如果有负责的计算的时候，用useMemo也可以
+
+## useImpretiveHandle
+
+父组件调用子组件的时候用到，并且只导出需要的，配合`forwardRef`使用
+
+```js
+// 注意这个ref可以不用定义类型
+const MyInput = forwardRef(function FaHandleSon(props: MyInputProps, ref) {
+  const inputRef = useRef<HTMLInputElement>(null)
+  const { label, ...otherProps } = props
+  useImperativeHandle(
+    ref,
+    () => {
+      return {
+        focus() {
+          inputRef.current?.focus()
+        },
+        scrollIntoView() {
+          inputRef.current?.scrollIntoView()
+        }
+      }
+    },
+    []
+  )
+  return (
+    <div className="py-10">
+      <label>
+        {label}
+        <input {...otherProps} ref={inputRef} className="text-black" />
+      </label>
+    </div>
+  )
+})
+
+export default MyInput
+```
+
+## React.memo
+
+性能优化的关键点，相当于类组件的`purecomponent`，父组件更新的时候，子组件通过浅比较判断是否需要更新
+
+## useReducer
+
+## useContext
+
+## useDebugValue
+
+## useDeferredValue
+
+## useId
+
+## useInsertionEffect
+
+## useLayoutEffect
+
+## useSyncExternalStore
+
+## useTransition
