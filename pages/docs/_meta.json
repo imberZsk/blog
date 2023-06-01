@@ -1,21 +1,21 @@
 {
   "starter": {
-    "title": "react脚手架"
+    "title": "搭建一个公司级React脚手架"
   },
   "hook": {
-    "title": "react hooks"
+    "title": "React所有hook使用场景"
   },
   "react": {
-    "title": "聊聊react"
+    "title": "聊聊React和Vue的区别"
   },
   "next": {
-    "title": "聊聊nextjs"
+    "title": "聊聊Nextjs服务端渲染"
   },
   "git": {
     "title": "git工作流"
   },
   "animate": {
-    "title": "酷炫动画"
+    "title": "封装的酷炫动画"
   },
   "optimize": {
     "title": "性能优化"
