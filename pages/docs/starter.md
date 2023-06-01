@@ -4,13 +4,13 @@
 
 #### 初始化项目
 
-- 官网模版创建项目：`pnpm create vite react-h5-starter --template react-swc-ts`
+- 官网模版创建项目：`pnpm create vite react-starter --template react-swc-ts`
 
 - 安装依赖：`pnpm i`
 
 - 后面有可能遇到 ts 类型错误，可以提前安装一个`pnpm i @types/node -D`
 
-#### 配置 npm
+#### 配置 npm 使用淘宝镜像
 
 - 配置`npmrc`
 
@@ -18,7 +18,7 @@
   registry = "https://registry.npmmirror.com/"
   ```
 
-- node 版本限制
+#### 配置 node 版本限制提示
 
 - package.json 中配置
 
@@ -28,10 +28,11 @@
   },
   ```
 
-#### 配置 eslint
+#### 配置 eslint 检查代码规范
 
-> eslint 选择只检查错误不处理风格，这样 eslint 就不会和 prettier 冲突,eslint 处理代码规范,prettier 处理代码风格
-> react 官网有提供一个 hook 的 eslint，不过用用处不大，就不使用了
+> eslint 处理代码规范,prettier 处理代码风格
+> eslint 选择只检查错误不处理风格，这样 eslint 就不会和 prettier 冲突
+> react 官网有提供一个 hook 的 eslint (eslint-plugin-react-hooks)，用处不大就不使用了
 
 - 安装：`pnpm i eslint -D`
 
@@ -48,20 +49,19 @@
   - pnpm
   ```
 
-- 配置`eslintrc.json->rules`里配置不用手动引入 react，和配置可以使用 any
+- 配置`eslintrc.json->rules`里配置不用手动引入 react，和配置不可以使用 any
+- 注意使用 React.FC 的时候如果报错说没有定义 props 类型，那需要引入一下 react
 
   ```json
   "rules": {
     //不用手动引入react
     "react/react-in-jsx-scope": "off",
     //使用any不报错
-    "@typescript-eslint/no-explicit-any": "off",
-    // 警告console
-    "no-console": 1
+    "@typescript-eslint/no-explicit-any": "error",
   }
   ```
 
-- 配置`.vscode>settings.json`，配置后 vscode 保存时自动格式化代码风格
+- 工作区配置`.vscode>settings.json`，配置后 vscode 保存时自动格式化代码风格
 
   比如写了一个 var a = 100,会被自动格式化为 const a = 100
 
@@ -69,7 +69,9 @@
   {
     "editor.codeActionsOnSave": {
       // 每次保存的时候将代码按照 eslint 格式进行修复
-      "source.fixAll.eslint": true
+      "source.fixAll.eslint": true,
+      //自动格式化
+      "editor.formatOnSave": true
     }
   }
   ```
@@ -85,7 +87,7 @@
   为什么上面有 vscode 自动 eslint 格式化，还需要命令行: 因为命令行能一次性爆出所有警告问题，便于找到位置修复
 
   ```js
-  npx eslint . --fix//用npx是使用项目里的eslint，不使用npx是本地npm i eslint -g下载的全局eslint
+  npx eslint . --fix//用npx使用项目里的eslint,没有的话也会去使用全局的eslint
   eslint . --fix //全部类型文件
   eslint . --ext .ts,.tsx --fix //--ext可以指定文件后缀名s
   ```
@@ -96,15 +98,15 @@
   "env": {
     "browser": true,
     "es2021": true,
-    "node": true//eslint里新增
+    "node": true // 因为比如配置vite的时候会使用到
   },
   ```
 
-#### 配置 prettier
+#### 配置 prettier 检查代码风格
 
-> prettier 格式化风格
+> prettier 格式化风格，因为使用 tailwind，使用 tailwind 官方插件
 
-- 安装：`pnpm i prettier -D`
+- 安装：`pnpm i prettier prettier-plugin-tailwindcss -D`
 
 - 配置`.prettierrc.json`
 
@@ -115,7 +117,8 @@
     "singleQuote": true, // 单引号
     "semi": false, // 分号
     "trailingComma": "none", // 尾随逗号
-    "tabWidth": 2 // 两个空格缩进
+    "tabWidth": 2, // 两个空格缩进
+    "plugins": ["prettier-plugin-tailwindcss"] //tailwind插件
   }
   ```
 
@@ -149,9 +152,10 @@
   npx prettier --write .//使用Prettier格式化所有文件
   ```
 
-#### 配置 editorConfig
+#### 配置 editorConfig 统一编辑器（可不用）
 
 > editorConfig，可以同步编辑器差异，其实大部分工作 prettier 做了
+> 有编辑器差异的才配置一下，如果团队都是 vscode 就没必要了
 
 - 配置`editorconfig`
 
@@ -170,9 +174,9 @@
   end_of_line = lf
   ```
 
-#### 配置 stylelint
+#### 配置 stylelint 检查 CSS 规范（可不用）
 
-> stylelint 处理 css 更专业
+> stylelint 处理 css 更专业,但是用了 tailwind 之后用处不大了
 
 - 安装：`pnpm i -D stylelint stylelint-config-standard`
 
@@ -203,7 +207,7 @@
   npx stylelint "**/*.css" --fix//格式化所有css,自动修复css
   ```
 
-#### 配置 husky
+#### 配置 husky 使用 git hook
 
 > 记得要初始化一个 git 仓库，husky 能执行 git hook，在 commit 的时候对文件进行操作
 
@@ -217,7 +221,7 @@
 
   `npx husky add .husky/pre-commit "npm run lint-staged"`，pre-commit 使用 lint-staged
 
-#### 配置 commitlint
+#### 配置 commitlint 检查提交信息
 
 > 提交规范参考：https://www.conventionalcommits.org/en/v1.0.0/
 
@@ -229,7 +233,7 @@
   { extends: ['@commitlint/config-conventional'] }
   ```
 
-#### 配置 lint-staged
+#### 配置 lint-staged 增量式检查
 
 - 安装`pnpm i -D lint-staged `
 
@@ -288,7 +292,7 @@
       // 配置别名
       alias: { '@': path.resolve(__dirname, './src') }
     },
-    //打包路径变为相对路径,用liveserver打开,便于本地测试打包后的文件
+    //打包路径变为相对路径,用liveServer打开,便于本地测试打包后的文件
     base: './'
   })
   ```
@@ -330,7 +334,7 @@
       // 配置别名
       alias: { '@': path.resolve(__dirname, './src') }
     },
-    //打包路径变为相对路径,用liveserver打开,便于本地测试打包后的文件
+    //打包路径变为相对路径,用liveServer打开,便于本地测试打包后的文件
     base: './'
   })
   ```
@@ -403,7 +407,7 @@
   )
   ```
 
-#### 配置 mobx
+#### 配置 mobx（可不用）
 
 - 安装`pnpm i mobx mobx-react-lite`
 
@@ -885,13 +889,13 @@ export type ReqTitle = {
 }
 ```
 
-#### 配置 changelog
+#### 配置 changelog（可不用）
 
 `pnpm i conventional-changelog-cli -D`
 
 执行：`conventional-changelog -p angular -i CHANGELOG.md -s`
 
-#### 下面是 h5 项目
+#### 下面是 h5 项目（可不用）
 
 > h5 项目需要配置自适应布局
 
