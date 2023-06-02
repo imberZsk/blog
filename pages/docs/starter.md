@@ -1,8 +1,6 @@
-## React-PC-Starter
-
-> vscode 里下好插件：eslint，prettier，stylelint，editorConfig，vite
-
 #### 初始化项目
+
+- vscode 里下好插件：eslint，prettier，stylelint，editorConfig，vite
 
 - 官网模版创建项目：`pnpm create vite react-starter --template react-swc-ts`
 
@@ -152,61 +150,6 @@
   npx prettier --write .//使用Prettier格式化所有文件
   ```
 
-#### 配置 editorConfig 统一编辑器（可不用）
-
-> editorConfig，可以同步编辑器差异，其实大部分工作 prettier 做了
-> 有编辑器差异的才配置一下，如果团队都是 vscode 就没必要了
-
-- 配置`editorconfig`
-
-  ```
-  #不再向上查找.editorconfig
-  root = true
-  # *表示全部文件
-  [*]
-  #编码
-  charset = utf-8
-  #缩进方式
-  indent_style = space
-  #缩进空格数
-  indent_size = 2
-  #换行符lf
-  end_of_line = lf
-  ```
-
-#### 配置 stylelint 检查 CSS 规范（可不用）
-
-> stylelint 处理 css 更专业,但是用了 tailwind 之后用处不大了
-
-- 安装：`pnpm i -D stylelint stylelint-config-standard`
-
-- 配置`.stylelintrc.json`
-
-  ```json
-  {
-    "extends": "stylelint-config-standard"
-  }
-  ```
-
-- 配置`.vscode>settings.json`，配置后 vscode 保存时自动格式化 css
-
-  ```json
-  {
-    "editor.codeActionsOnSave": {
-      "source.fixAll.eslint": true, // 每次保存的时候将代码按照 eslint 格式进行修复
-      "source.fixAll.stylelint": true //自动格式化stylelint
-    },
-    "editor.formatOnSave": true, //自动格式化
-    "editor.defaultFormatter": "esbenp.prettier-vscode" //风格用prettier
-  }
-  ```
-
-- 掌握`stylelint命令行`
-
-  ```js
-  npx stylelint "**/*.css" --fix//格式化所有css,自动修复css
-  ```
-
 #### 配置 husky 使用 git hook
 
 > 记得要初始化一个 git 仓库，husky 能执行 git hook，在 commit 的时候对文件进行操作
@@ -259,6 +202,8 @@
   ```
 
 #### 配置 vite（代理/别名/drop console 等）
+
+> 如果有兼容性考虑，需要使用 legacy 插件
 
 - 一些方便开发的配置
 
@@ -401,51 +346,13 @@
   import ReactDOM from 'react-dom/client'
   import './global.css'
   import router from './router'
-
+  
   ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
     <RouterProvider router={router} />
   )
   ```
 
-#### 配置 mobx（可不用）
-
-- 安装`pnpm i mobx mobx-react-lite`
-
-- 配置`model->index.ts`
-
-  ```js
-  import { makeAutoObservable } from 'mobx'
-
-  const store = makeAutoObservable({
-    count: 1,
-    setCount: (count: number) => {
-      store.count = count
-    }
-  })
-
-  export default store
-  ```
-
-- 使用方法举个 🌰
-
-  ```tsx
-  import store from '@/model'
-  import { Button } from 'antd'
-  import { observer, useLocalObservable } from 'mobx-react-lite'
-  const Home: React.FC = () => {
-    const localStore = useLocalObservable(() => store)
-    return (
-      <div>
-        <Button>Antd</Button>
-        <h1>{localStore.count}</h1>
-      </div>
-    )
-  }
-
-  export default observer(Home)
-  ```
-
-#### 如果用 zustand
+#### 配置 zustand 状态管理
 
 - 安装`pnpm i zustand `
 
@@ -489,7 +396,7 @@
       </div>
     )
   }
-
+  
   export default ZustandDemo
   ```
 
@@ -559,7 +466,7 @@ module.exports = {
 }
 ```
 
-#### 封装 fetch
+#### 封装 fetch 请求
 
 ```js
 interface BaseOptions {
@@ -742,7 +649,7 @@ export { fetchJson, FetchJson }
 
 ```
 
-#### 如果用 axios
+#### 如果用 axios 请求
 
 request.ts
 
@@ -889,19 +796,138 @@ export type ReqTitle = {
 }
 ```
 
+#### 配置 mobx（可不用）
+
+- 安装`pnpm i mobx mobx-react-lite`
+
+- 配置`model->index.ts`
+
+  ```js
+  import { makeAutoObservable } from 'mobx'
+
+  const store = makeAutoObservable({
+    count: 1,
+    setCount: (count: number) => {
+      store.count = count
+    }
+  })
+
+  export default store
+  ```
+
+- 使用方法举个 🌰
+
+  ```tsx
+  import store from '@/model'
+  import { Button } from 'antd'
+  import { observer, useLocalObservable } from 'mobx-react-lite'
+  const Home: React.FC = () => {
+    const localStore = useLocalObservable(() => store)
+    return (
+      <div>
+        <Button>Antd</Button>
+        <h1>{localStore.count}</h1>
+      </div>
+    )
+  }
+  
+  export default observer(Home)
+  ```
+
 #### 配置 changelog（可不用）
 
 `pnpm i conventional-changelog-cli -D`
 
-执行：`conventional-changelog -p angular -i CHANGELOG.md -s`
+
+
+第一次先执行`conventional-changelog -**p** angular -**i** CHANGELOG.md -s -r 0`全部生成之前的提交信息
+
+
+
+配置个脚本，版本变化打tag的时候可以使用
+
+```json
+"scripts": {
+	"changelog": "conventional-changelog -p angular -i CHANGELOG.md -s"
+}
+```
+
+#### 配置 editorConfig 统一编辑器（可不用）
+
+> editorConfig，可以同步编辑器差异，其实大部分工作 prettier 做了
+> 有编辑器差异的才配置一下，如果团队都是 vscode 就没必要了
+
+- 配置`editorconfig`
+
+  ```
+  #不再向上查找.editorconfig
+  root = true
+  # *表示全部文件
+  [*]
+  #编码
+  charset = utf-8
+  #缩进方式
+  indent_style = space
+  #缩进空格数
+  indent_size = 2
+  #换行符lf
+  end_of_line = lf
+  ```
+
+#### 配置 stylelint 检查 CSS 规范（可不用）
+
+> stylelint 处理 css 更专业,但是用了 tailwind 之后用处不大了
+
+- 安装：`pnpm i -D stylelint stylelint-config-standard`
+
+- 配置`.stylelintrc.json`
+
+  ```json
+  {
+    "extends": "stylelint-config-standard"
+  }
+  ```
+
+- 配置`.vscode>settings.json`，配置后 vscode 保存时自动格式化 css
+
+  ```json
+  {
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": true, // 每次保存的时候将代码按照 eslint 格式进行修复
+      "source.fixAll.stylelint": true //自动格式化stylelint
+    },
+    "editor.formatOnSave": true, //自动格式化
+    "editor.defaultFormatter": "esbenp.prettier-vscode" //风格用prettier
+  }
+  ```
+
+- 掌握`stylelint命令行`
+
+  ```js
+  npx stylelint "**/*.css" --fix//格式化所有css,自动修复css
+  ```
 
 #### 下面是 h5 项目（可不用）
 
-> h5 项目需要配置自适应布局
+#### 配置`vconsole`（h5）
 
-#### 配置 postcss-px-to-viewport（废弃、自适应布局其实不用插件）
+- 安装`pnpm i vconsole -D`
 
-- 把蓝湖设计稿尺寸固定为 1000px，然后你点出来的值比如是 77px，那你只需要写 7.7vw 就实现了自适应
+- `main.tsx`里新增
+
+  ```tsx
+  import VConsole from 'vconsole'
+  new VConsole({ theme: 'dark' })
+  ```
+
+#### antd 换成 mobile antd（h5）
+
+- `pnpm remove antd`
+- `pnpm add mobile-antd`
+
+#### 配置 postcss-px-to-viewport（废弃）
+
+- 把蓝湖设计稿尺寸固定为 1000px，然后你点出来的值比如是 77px，那你只需要写 7.7vw 就实现了自适应布局
 
 - 安装：`pnpm i postcss-px-to-viewport -D`
 
@@ -929,19 +955,3 @@ export type ReqTitle = {
     }
   }
   ```
-
-#### 配置`vconsole`
-
-- 安装`pnpm i vconsole -D`
-
-- `main.tsx`里新增
-
-  ```tsx
-  import VConsole from 'vconsole'
-  new VConsole({ theme: 'dark' })
-  ```
-
-#### antd 换成 mobile antd
-
-- `pnpm remove antd`
-- `pnpm add mobile-antd`
