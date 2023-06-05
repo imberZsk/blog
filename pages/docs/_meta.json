@@ -3,16 +3,16 @@
     "title": "统一公司的项目规范"
   },
   "hook": {
-    "title": "React Hooks 总结"
+    "title": "React Hooks 用法总结"
   },
   "react": {
     "title": "思考 Vue3 和 React18 的区别"
   },
   "next": {
-    "title": "聊聊Nextjs服务端渲染"
+    "title": "聊聊 Nextjs 服务端渲染"
   },
   "git": {
-    "title": "git工作流"
+    "title": "Git 工作流"
   },
   "animate": {
     "title": "封装的酷炫动画"
