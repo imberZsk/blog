@@ -1,4 +1,9 @@
-> https://juejin.cn/post/7124955707723481125 这是之前的一部分理解，又写了一段时间 react 和 nextjs，再来补充一部分
+> https://juejin.cn/post/7124955707723481125
+>
+> - 之前的一部分理解是从使用层面上（React 灵活的 JSX 和 Vue 智能依赖收集）以及风格等
+> - 两个框架核心的逻辑服用方法 Hook 的不同
+> - 优化方向不同 （Vue 响应式优化和 diff 优化，React 的 Fiber 架构、并发模式、RSC）
+> - 其他：React 函数式编程，V2 和 React 区别大，V3 趋近相同，都是声明式/Hook 等
 
 ## Hook 的不同
 
@@ -48,34 +53,12 @@ Concurrent Mode 的引入，带来了以下几个方面的优势：
    并发模式可以在渲染过程中及时响应用户的输入和请求，避免出现 UI 卡顿或者无响应的情况，从而提高了应用程序的可响应性。
 3. 改善用户体验
    并发模式优化了数据的加载和显示方式，使得用户可以更快地看到页面并开始交互，提高了整个应用的用户体验。
-   如何使用 Concurrent Mode？
-   在 React 18 中，启用 Concurrent Mode 是非常简单的，只需要在 ReactDOM.render 函数中添加一个 mode 参数即可。例如：
-   javascript 复制代码 ReactDOM.render(<App />, document.getElementById('root'), { mode: 'concurrent' })
+4. 如何使用 Concurrent Mode？React 官方从是否开启并发更新变化是否使用并发特性，React18 默认支持并发更新，也就是 ReactDOM.createRoot（之前还有 Legacy/Blocking 模式分别对应 render/createBlockingRoot）,然后使用 useDeferredValue 和 useTransition 去并发更新
 
-并发模式可能会导致数据的不稳定性，因此需要使用 React 的新 Hook 函数和 Suspense 组件来处理数据加载和显示的问题。例如，使用 useTransition 和 Suspense 组件来优化数据的加载和显示：
+## React Fiber
 
-```js
-const [startTransition, isPending] = useTransition({ timeoutMs: 1000 })
+采用不可中断的「递归」方式更新的 Stack Reconciler（老架构）
 
-function handleClick() {
-  startTransition(() => {
-    // 在这里更新状态
-  })
-}
-
-return (
-  <Suspense fallback={<Spinner />}>
-    {isPending ? <Spinner /> : <DataComponent />}
-  </Suspense>
-)
-```
-
-并发模式目前仍处于实验阶段，并且可能会对现有应用程序产生一些影响。因此，在使用并发模式时，我们需要注意以下几点：
-
-1.并发模式可能会导致组件渲染的顺序发生变化，从而引起一些不稳定的问题。因此，需要仔细检查代码中是否存在依赖组件渲染顺序的逻辑，并使用 React 提供的新的生命周期函数或 Hook 函数来解决这些问题。
-
-2.并发模式可能会导致数据的不稳定性，从而引起数据加载和显示的问题。因此，需要使用 Suspense 组件和 useTransition Hook 来优化数据的加载和显示，确保数据的稳定性。
-
-3.并发模式目前还处于实验阶段，并且存在一些兼容性问题。在使用并发模式时，需要特别注意在不同浏览器和设备上的表现，以确保应用程序能够正常运行。
+采用可中断的「遍历」方式更新的 Fiber Reconciler（新架构）
 
 ## React Server Component

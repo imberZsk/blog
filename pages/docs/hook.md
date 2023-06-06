@@ -370,8 +370,8 @@ export default function UseDebugValue() {
 
 function useOnlineStatus() {
   const isOnline = useSyncExternalStore(
-    subscribe,
-    () => navigator.onLine,
+    subscribe, //触发这个
+    () => navigator.onLine, //返回这个
     () => true
   )
   useDebugValue(isOnline ? 'Online' : 'Offline')
@@ -389,10 +389,127 @@ function subscribe(callback: any) {
 }
 ```
 
-## useSyncExternalStore
-
 ## useTransition
+
+降低更新的优先级，更新意味着视图渲染，所以当更新拥有不同优先级后，这意味着视图渲染拥有不同优先级
+
+```js
+const [isPending, startTransition] = useTransition()
+```
+
+1、isPending 标记，告诉您是否有待处理的过渡。
+
+2、startTransition 函数允许您将状态更新标记为过渡,也就是并发更新。
+
+```jsx
+import { useState, useTransition } from 'react'
+import { Input } from 'antd'
+
+const Index = () => {
+  const [isPending, startTransition] = useTransition()
+  const [input, setInput] = useState('')
+  const [list, setList] = useState<string[]>([])
+
+  return (
+    <>
+      <div>大量数据</div>
+      <Input
+        value={input}
+        onChange={(e) => {
+          setInput(e.target.value)
+          startTransition(() => {
+            const res: string[] = []
+            for (let i = 0; i < 10000; i++) {
+              res.push(e.target.value)
+            }
+            setList(res)
+          })
+        }}
+      />
+      {isPending ? (
+        <div>加载中...</div>
+      ) : (
+        list.map((item, index) => <div key={index}>{item}</div>)
+      )}
+    </>
+  )
+}
+
+export default Index
+```
+
+## useDeferredValue
+
+useDeferredValue 用来处理数据本身，useTransition 用来处理更新函数，也是并发更新模式
+
+可以在加载新数据的时候显示旧数据，有点过度的感觉，比如 input 框查询可以通过 css 过渡，感觉渐进的感觉
+
+```jsx
+const deferredValue = useDeferredValue(value)
+```
+
+value：接受一个可变的值，如 useState 所创建的值。 deferredValue：返回一个延迟状态的值。
+
+```jsx
+import { Suspense, useState, useDeferredValue } from 'react'
+import SearchResults from './SearchResults.js'
+
+export default function App() {
+  const [query, setQuery] = useState('')
+  const deferredQuery = useDeferredValue(query)
+  const isStale = query !== deferredQuery
+  return (
+    <>
+      <label>
+        Search albums:
+        <input value={query} onChange={(e) => setQuery(e.target.value)} />
+      </label>
+      <Suspense fallback={<h2>Loading...</h2>}>
+        <div
+          style={{
+            opacity: isStale ? 0.5 : 1,
+            transition: isStale
+              ? 'opacity 0.2s 0.2s linear'
+              : 'opacity 0s 0s linear'
+          }}
+        >
+          <SearchResults query={deferredQuery} />
+        </div>
+      </Suspense>
+    </>
+  )
+}
+```
 
 ## useInsertionEffect
 
-## useDeferredValue
+useInsertionEffect 适用于 CSS-in-JS 库作者。除非您正在处理 CSS-in-JS 库，并且需要一个注入样式的地方，否则您可能想要 useEffect 或 useLayoutEffect。
+
+## useSyncExternalStore
+
+主要面向开源库作者，让现有的库支持并发模式，
+也可以用于订阅浏览器 API，比如官网 demo 判断 navigator.onLine 是否断网
+
+## 其他官网没有提及的
+
+1、useMemoCache（减少性能优化心智负担）
+
+这里简单聊聊 useMemoCache。长久以来，不管是 ClassComponent 的 shouldComponentUpdate，还是 FC 中 2 个性能优化相关 hook，都存在比较重的心智负担，比如：
+
+开发者需要考虑是否需要性能优化，开发者需要考虑何时使用 useMemo、useCallback
+
+为了解决这个问题，在 2021 年的 React Conf，黄玄带来了能够通过编译器生成等效于 useMemo、useCallback 代码的方案 —— React Forget。
+
+useMemoCache 就是 React 内部为 React Forget 提供缓存支持的 hook。
+
+2、useMutableSource 让现有库兼容并发模式
+
+3、use 可以使用 RSC
+
+4、useCacheRefresh 用于建立<Suspense>缓存
+
+5、useOptimistic 用于 form 标签 action 属性（https://mp.weixin.qq.com/s?__biz=MzkzMjIxNTcyMA==&mid=2247492133&idx=1&sn=7a0d24b1561fd295ca4e5a1c0abfa1be&chksm=c25d8ce2f52a05f4a97f788e3b2989e56b85cd5736d037c15dcc4f5307c6cdd919598ad9945b#rd）
+
+6、useFormStatus 用于 form 标签 action 属性
+
+7、useEffectEvent（对 useEffect 能力的补充）
