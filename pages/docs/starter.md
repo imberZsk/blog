@@ -1,6 +1,6 @@
 #### 初始化项目
 
-- vscode 里下好插件：eslint，prettier，stylelint，editorConfig，vite
+- vscode 里下好插件：eslint，prettier，stylelint
 
 - 官网模版创建项目：`pnpm create vite react-starter --template react-swc-ts`
 
@@ -203,7 +203,7 @@
 
 #### 配置 vite（代理/别名/drop console 等）
 
-> 如果有兼容性考虑，需要使用 legacy 插件
+> 如果有兼容性考虑，需要使用 legacy 插件，vite 也有 vscode 插件，也可以下载使用
 
 - 一些方便开发的配置
 
@@ -346,7 +346,7 @@
   import ReactDOM from 'react-dom/client'
   import './global.css'
   import router from './router'
-  
+
   ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
     <RouterProvider router={router} />
   )
@@ -396,7 +396,7 @@
       </div>
     )
   }
-  
+
   export default ZustandDemo
   ```
 
@@ -468,17 +468,21 @@ module.exports = {
 
 #### 封装 fetch 请求
 
+> 这个封装仅供参考，TS 类型有点小问题
+
 ```js
+// 可以传入这些配置
 interface BaseOptions {
   method?: string
   credentials?: RequestCredentials
-  strictErrors?: boolean
   headers?: HeadersInit
   body?: string | null
 }
 
+// 请求方式
 type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE' | 'HEAD'
 
+// 第一层出参
 interface ResponseObject {
   ok: boolean
   error: boolean
@@ -488,15 +492,19 @@ interface ResponseObject {
   response: Response
 }
 
-class FetchJson {
+// 请求头类型
+type JSONHeader = {
+  Accept: string
+  'Content-Type': string
+}
+
+// 创建类
+class Request {
   private baseOptions: BaseOptions = {}
 
+  // 根据传入的 baseOptions 做为初始化参数
   constructor(options?: BaseOptions) {
     this.setBaseOptions(options || {})
-  }
-
-  public getBaseOptions(): BaseOptions {
-    return this.baseOptions
   }
 
   public setBaseOptions(options: BaseOptions): BaseOptions {
@@ -504,18 +512,25 @@ class FetchJson {
     return this.baseOptions
   }
 
+  // 也提供获取 baseOption 的方法
+  public getBaseOptions(): BaseOptions {
+    return this.baseOptions
+  }
+
+  // 核心请求 T 为入参类型，ResponseObject 为出参类型
   public request<T>(
     method: HttpMethod,
     url: string,
-    data?: T,
-    options?: BaseOptions
+    data?: T, //支持使用get的时候配置{key,value}的query参数
+    options?: BaseOptions //这里也有个 base 的 method
   ): Promise<ResponseObject> {
+    // 默认 baseOptions
     const defaults: BaseOptions = {
-      method,
-      credentials: 'same-origin',
-      strictErrors: false
+      method
+      // credentials: 'same-origin'
     }
 
+    // 收集最后要传入的配置
     const settings: BaseOptions = Object.assign(
       {},
       defaults,
@@ -523,48 +538,57 @@ class FetchJson {
       options
     )
 
+    // 如果 method 格式错误
     if (!settings.method || typeof settings.method !== 'string')
       throw Error('[fetch-json] HTTP method missing or invalid.')
 
+    // 如果 url 格式错误
     if (typeof url !== 'string')
       throw Error('[fetch-json] URL must be a string.')
 
+    // 支持大小写
     const httpMethod = settings.method.trim().toUpperCase()
+
+    // 如果是GET
     const isGetRequest = httpMethod === 'GET'
 
-    type JSONHeader = {
-      Accept: string
-      'Content-Type': string
-    }
-
+    // 请求头
     const jsonHeaders: Partial<JSONHeader> = { Accept: 'application/json' }
 
+    // 如果不是 get 设置请求头
     if (!isGetRequest && data) jsonHeaders['Content-Type'] = 'application/json'
 
+    // 收集最后的headers配置
     settings.headers = Object.assign({}, jsonHeaders, settings.headers)
 
+    // 获取query参数的key
     const paramKeys = isGetRequest && data ? Object.keys(data) : []
 
+    // 获取query参数的值
     const getValue = (key: keyof T) => (data ? data[key] : '')
 
+    // 获取query key=value
     const toPair = (key: string) =>
       key + '=' + encodeURIComponent(getValue(key as keyof T) as string)
 
+    // 生成 key=value&key=value 的query参数
     const params = () => paramKeys.map(toPair).join('&')
 
+    // 收集最后的 url 配置
     const requestUrl = !paramKeys.length
       ? url
       : url + (url.includes('?') ? '&' : '?') + params()
 
+    // get没有body
     settings.body = !isGetRequest && data ? JSON.stringify(data) : null
 
+    // 做一层res.json()
     const toJson = (value: Response): Promise<ResponseObject> => {
+      // 拿到第一次请求的值
       const response = value
 
       const contentType = response.headers.get('content-type')
-      const isHead = httpMethod === 'HEAD'
       const isJson = !!contentType && /json|javascript/.test(contentType)
-      const headersObj = () => Object.fromEntries(response.headers.entries())
 
       const textToObj = (httpBody: string): ResponseObject => ({
         ok: response.ok,
@@ -584,22 +608,18 @@ class FetchJson {
         response: response
       })
 
-      if (settings.strictErrors && !response.ok)
-        throw Error(
-          '[fetch-json] HTTP response status ("strictErrors" mode enabled): ' +
-            response.status
-        )
-
-      return isHead
-        ? response.text().then(headersObj)
-        : isJson
-        ? response.json().catch(errToObj)
+      return isJson
+        ? // 如果是json,用json()
+          response.json().catch(errToObj)
         : response.text().then(textToObj)
     }
 
+    // settings做一下序列化
     const settingsRequestInit: RequestInit = JSON.parse(
       JSON.stringify(settings)
     )
+
+    // 最终请求fetch,再通过then就能取到第二层res
     return fetch(requestUrl, settingsRequestInit).then(toJson)
   }
 
@@ -644,8 +664,9 @@ class FetchJson {
   }
 }
 
-const fetchJson = new FetchJson()
-export { fetchJson, FetchJson }
+const request = new Request()
+
+export { request, Request }
 
 ```
 
@@ -830,7 +851,7 @@ export type ReqTitle = {
       </div>
     )
   }
-  
+
   export default observer(Home)
   ```
 
@@ -838,13 +859,9 @@ export type ReqTitle = {
 
 `pnpm i conventional-changelog-cli -D`
 
-
-
 第一次先执行`conventional-changelog -**p** angular -**i** CHANGELOG.md -s -r 0`全部生成之前的提交信息
 
-
-
-配置个脚本，版本变化打tag的时候可以使用
+配置个脚本，版本变化打 tag 的时候可以使用
 
 ```json
 "scripts": {
@@ -854,7 +871,7 @@ export type ReqTitle = {
 
 #### 配置 editorConfig 统一编辑器（可不用）
 
-> editorConfig，可以同步编辑器差异，其实大部分工作 prettier 做了
+> editorConfig，可以同步编辑器差异，其实大部分工作 prettier 做了，需要下载 editorConfig vscode 插件
 > 有编辑器差异的才配置一下，如果团队都是 vscode 就没必要了
 
 - 配置`editorconfig`
