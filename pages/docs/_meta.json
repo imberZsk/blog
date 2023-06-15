@@ -5,17 +5,20 @@
   "hook": {
     "title": "React Hooks 用法总结"
   },
+  "vue": {
+    "title": "Vue底层原理总结"
+  },
   "react": {
-    "title": "思考 Vue3 和 React18 的区别"
+    "title": "React底层原理总结"
+  },
+  "animate": {
+    "title": "framer motion封装动画Hook"
   },
   "next": {
-    "title": "聊聊 Nextjs 服务端渲染"
+    "title": "Nextjs 服务端渲染"
   },
   "git": {
     "title": "Git 工作流"
-  },
-  "animate": {
-    "title": "封装的酷炫动画"
   },
   "optimize": {
     "title": "性能优化"
