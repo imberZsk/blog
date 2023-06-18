@@ -940,7 +940,7 @@ export type ReqTitle = {
 #### antd 换成 mobile antd（h5）
 
 - `pnpm remove antd`
-- `pnpm add mobile-antd`
+- `pnpm add antd-mobile`
 
 #### 配置 postcss-px-to-viewport（废弃）
 
