@@ -1,0 +1,11 @@
+{
+  "idea": {
+    "title": "1、Vue3设计理念"
+  },
+  "base": {
+    "title": " 2、Vue3项目搭建"
+  },
+  "reactivity": {
+    "title": " 3、响应式原理"
+  }
+}

@@ -7,6 +7,14 @@
     "title": "Docs",
     "type": "page"
   },
+  "vue3": {
+    "title": "Vue3",
+    "type": "page"
+  },
+  "react18": {
+    "title": "React18",
+    "type": "page"
+  },
   "showcase": {
     "type": "page",
     "title": "Showcase",
