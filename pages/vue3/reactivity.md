@@ -4,24 +4,25 @@
 
 ```js
 import { effect, reactive } from '../../dist/mini-vue.esm-bundler.js'
+
 const obj = {
   name: 'imber',
   age: 18
 }
-debugger
+
 const proxy = reactive(obj)
 
 // 副作用函数、innerHTML渲染页面
 effect(() => {
-  document.querySelector('.app').innerHTML = proxy.age //收集依赖
+  document.querySelector('.app').innerHTML = proxy.age //读取数据，触发收集依赖
 })
 
 setTimeout(() => {
-  proxy.age = 10
+  proxy.age = 10 //设置数据，出发更新依赖，也就是找到之前的effect里面的callback重新执行
 }, 1000)
 ```
 
-## reactive 去生成响应式数据
+## reactive 通过 proxy 代理对象
 
 给对象包一层 reactive 变成响应式数据，核心就是使用 proxy
 
@@ -75,7 +76,7 @@ function createReactiveObject(
 
 ## proxy 的 baseHandler
 
-reactive 代理等核心逻辑，依赖收集与触发对应着 setter 和 getter
+reactive proxy 代理的核心逻辑，依赖收集与触发对应着 setter 和 getter
 
 ```js
 const get = /*#__PURE__*/ createGetter()
@@ -191,9 +192,11 @@ function createSetter(shallow = false) {
 }
 ```
 
-## effect 函数
+## effect 函数 执行
 
-执行 effect 函数，调用 ReactiveEffect 里的 this.fn 也就是传入 effect 的 callback,触发 getter
+effect 接受 callback 作为参数，执行 effect 函数，初始化一个 ReactiveEffect 类
+
+会直接调用一次 ReactiveEffect 里的 this.fn 也就是传入 effect 的 callback，触发 getter
 
 ```js
 export function effect<T = any>(
@@ -307,12 +310,14 @@ export class ReactiveEffect<T = any> {
 }
 ```
 
-## track 收集依赖
+## 触发 getter 使用 track 收集依赖
 
-getter 的时候收集依赖，要知道改变了那个对象的那个 key 对应等 effect(fn)
-结构为 WeakMap Map Set
+getter 的时候收集依赖，收集到的是哪个对象的哪个 key 对应的 ReactiveEffect，然后 ReactiveEffect 身上的 this.fn 就是最终要找的，后续让 getter 找到重新执行
+
+收集的依赖结构为 WeakMap Map Set(ReactiveEffect)放在 全局变量 targetMap 里
 
 ```js
+//getter在上面的baseHandler那个地方执行，核心就是触发track
 export function track(target: object, type: TrackOpTypes, key: unknown) {
   if (shouldTrack && activeEffect) {
     let depsMap = targetMap.get(target)
@@ -331,13 +336,47 @@ export function track(target: object, type: TrackOpTypes, key: unknown) {
     trackEffects(dep, eventInfo)
   }
 }
+
+export function trackEffects(
+  dep: Dep,
+  debuggerEventExtraInfo?: DebuggerEventExtraInfo
+) {
+  let shouldTrack = false
+  if (effectTrackDepth <= maxMarkerBits) {
+    if (!newTracked(dep)) {
+      dep.n |= trackOpBit // set newly tracked
+      shouldTrack = !wasTracked(dep)
+    }
+  } else {
+    // Full cleanup mode.
+    shouldTrack = !dep.has(activeEffect!)
+  }
+
+  if (shouldTrack) {
+    dep.add(activeEffect!)//核心收集依赖
+    activeEffect!.deps.push(dep)
+    if (__DEV__ && activeEffect!.onTrack) {
+      activeEffect!.onTrack(
+        extend(
+          {
+            effect: activeEffect!
+          },
+          debuggerEventExtraInfo!
+        )
+      )
+    }
+  }
+}
 ```
 
 ## trigger 触发依赖
 
-改变代理对象的时候触发 setter，根据之前收集的依赖找到对应的 effect(fn)，遍历执行，页面重新渲染
+改变代理对象的时候触发 setter，根据之前收集的依赖找到对应的 ReactiveEffect(this.fn)，遍历执行，页面重新渲染
+
+从全局依赖变量 targetMap 取取出来遍历执行
 
 ```js
+//getter在上面的baseHandler那个地方执行，核心就是触发trigger
 export function trigger(
   target: object,
   type: TriggerOpTypes,

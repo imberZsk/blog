@@ -116,5 +116,24 @@ target.address.city = 'New York' // 输出: 设置属性city为New York
 ```
 
 如果使用 defineProperty，不能劫持对象，只能劫持对象的属性，需要递归劫持
+
 当新增属性和删除属性时无法监控变化。需要通过$set、$delete 实现
+
 Vue2 中数组不采用 defineProperty 来进行劫持 （浪费性能，对所有索引进行劫持会造成性能浪费）需要对数组单独进行处理
+
+## WeakMap 和 Map
+
+```js
+const map = new Map()
+const weakMap = newWeakMap()(function () {
+  const foo = { foo: 1 }
+  const bar = { bar: 2 }
+
+  map.set(foo, 1)
+  weakMap.set(bar, 2)
+})()
+```
+
+WeakMap 只能使用对象作为 key
+
+WeakMap 利于浏览器垃圾回收，上面代码执行后 foo 被强引用不会被回收，bar 弱引用会被回收

@@ -107,9 +107,9 @@ export function trackEffects(
 }
 ```
 
-## effect 函数执行触发 setter
+## 更新的时候触发 setter
 
-triggerEffects 然后又是之前的逻辑
+ref 就是之前的 refImpl，就能从 this.dep 上拿到依赖，triggerEffects 然后又是之前的逻辑
 
 ```js
 export function triggerRefValue(ref: RefBase<any>, newVal?: any) {
@@ -125,6 +125,40 @@ export function triggerRefValue(ref: RefBase<any>, newVal?: any) {
       })
     } else {
       triggerEffects(dep)
+    }
+  }
+}
+
+export function triggerEffects(
+  dep: Dep | ReactiveEffect[],
+  debuggerEventExtraInfo?: DebuggerEventExtraInfo
+) {
+  // spread into array for stabilization
+  const effects = isArray(dep) ? dep : [...dep]
+  for (const effect of effects) {
+    if (effect.computed) {
+      triggerEffect(effect, debuggerEventExtraInfo)
+    }
+  }
+  for (const effect of effects) {
+    if (!effect.computed) {
+      triggerEffect(effect, debuggerEventExtraInfo)
+    }
+  }
+}
+
+function triggerEffect(
+  effect: ReactiveEffect,
+  debuggerEventExtraInfo?: DebuggerEventExtraInfo
+) {
+  if (effect !== activeEffect || effect.allowRecurse) {
+    if (__DEV__ && effect.onTrigger) {
+      effect.onTrigger(extend({ effect }, debuggerEventExtraInfo))
+    }
+    if (effect.scheduler) {
+      effect.scheduler()
+    } else {
+      effect.run()
     }
   }
 }
