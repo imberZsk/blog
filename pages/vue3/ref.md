@@ -19,7 +19,7 @@ setTimeout(() => {
 
 ## 返回一个 RefImpl 类的实例
 
-RefImpl 包含 getter 和 setter，如果是对象会用 proxy 包裹，并把值保存到\_value
+RefImpl 包含 属性访问器可以做到 getter 和 setter 功能，如果是对象会用 proxy 包裹，并把值保存到\_value
 
 ```js
 export function ref(value?: unknown) {
@@ -65,6 +65,67 @@ class RefImpl<T> {
 
 ## effect 函数执行触发 getter
 
-```js
+一步是 effect 执行之前说过了会初始化 activeEffect
+然后触发 getter 执行 trackRefValue 最终返回\_value，把依赖存到 refImpl 上的 dep 里
 
+```js
+export function trackRefValue(ref: RefBase<any>) {
+  if (shouldTrack && activeEffect) {
+    ref = toRaw(ref)
+    if (__DEV__) {
+      trackEffects(ref.dep || (ref.dep = createDep()), {
+        target: ref,
+        type: TrackOpTypes.GET,
+        key: 'value'
+      })
+    } else {
+      trackEffects(ref.dep || (ref.dep = createDep()))
+    }
+  }
+}
+
+export function trackEffects(
+  dep: Dep,
+  debuggerEventExtraInfo?: DebuggerEventExtraInfo
+) {
+  let shouldTrack = false
+  if (effectTrackDepth <= maxMarkerBits) {
+    if (!newTracked(dep)) {
+      dep.n |= trackOpBit // set newly tracked
+      shouldTrack = !wasTracked(dep)
+    }
+  } else {
+    // Full cleanup mode.
+    shouldTrack = !dep.has(activeEffect!)
+  }
+
+  if (shouldTrack) {
+    // effect会初始化activeEffect，所以这个activeEffect是有的
+    dep.add(activeEffect!)
+    activeEffect!.deps.push(dep)
+  }
+}
+```
+
+## effect 函数执行触发 setter
+
+triggerEffects 然后又是之前的逻辑
+
+```js
+export function triggerRefValue(ref: RefBase<any>, newVal?: any) {
+  ref = toRaw(ref)
+  const dep = ref.dep
+  if (dep) {
+    if (__DEV__) {
+      triggerEffects(dep, {
+        target: ref,
+        type: TriggerOpTypes.SET,
+        key: 'value',
+        newValue: newVal
+      })
+    } else {
+      triggerEffects(dep)
+    }
+  }
+}
 ```
