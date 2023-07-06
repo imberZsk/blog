@@ -187,4 +187,5 @@ export function trackEffects(
 
 ## 触发代理对象 的 setter
 
+ComputedRefImpl 就是一个 effect，通过 scheduler 触发的 proxy 依赖，初始为 dirty，然后执行后为 false 就不用重新执行了取之前的数据，数据改变 scheduler 里把数据变为 true 然后又能执行
 setter 是走正常的 setter,而不是走 ComputedRefImpl 的 setter,computed 不支持修改生成的数据
