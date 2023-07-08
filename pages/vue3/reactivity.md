@@ -483,3 +483,19 @@ export function triggerEffects(
   }
 }
 ```
+
+## 核心方法
+
+reactive shadowReactive
+
+readonly shadowReadonly
+
+toRaw（转原始对象） markRow（标记不能被代理，本质是加上\_v_skip）
+
+自动拆包就是在 baseHandler 里判断如果是 ref 就返回 ref.value
+
+除了 get 和 set 还有 3 个代理
+当使用到 delete in for/in 这个三个的时候
+分别对应 deleteProperty has ownKeys 代理
+
+...toRefs 是把属性都拿出来使用，单个用
