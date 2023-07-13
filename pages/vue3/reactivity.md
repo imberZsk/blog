@@ -22,20 +22,75 @@ setTimeout(() => {
 }, 1000)
 ```
 
+## 入口导出两个函数
+
+```js
+// dev打包入口
+export { reactive } from './effect'
+export { reactive } from './reactive'
+```
+
 ## reactive 通过 proxy 代理对象
 
 给对象包一层 reactive 变成响应式数据，核心就是使用 proxy
 
 ```js
-export function reactive(target: object) {
-  if (isReadonly(target)) {
-    return target
+import { isObject, toRawType } from '@vue/shared'
+import { mutableHandlers } from './baseHandlers'
+
+// 声明一个枚举对象
+export const enum ReactiveFlags {
+  SKIP = '__v_skip',
+  IS_REACTIVE = '__v_isReactive',
+  IS_READONLY = '__v_isReadonly',
+  IS_SHALLOW = '__v_isShallow',
+  RAW = '__v_raw'
+}
+// 传入对象的类型，可能有上面枚举的属性
+export interface Target {
+  [ReactiveFlags.SKIP]?: boolean
+  [ReactiveFlags.IS_REACTIVE]?: boolean
+  [ReactiveFlags.IS_READONLY]?: boolean
+  [ReactiveFlags.IS_SHALLOW]?: boolean
+  [ReactiveFlags.RAW]?: any
+}
+
+export const reactiveMap = new WeakMap<Target, any>()
+
+const enum TargetType {
+  INVALID = 0,
+  COMMON = 1,
+  COLLECTION = 2
+}
+
+function targetTypeMap(rawType: string) {
+  switch (rawType) {
+    case 'Object':
+    case 'Array':
+      return TargetType.COMMON
+    case 'Map':
+    case 'Set':
+    case 'WeakMap':
+    case 'WeakSet':
+      return TargetType.COLLECTION
+    default:
+      return TargetType.INVALID
   }
+}
+
+function getTargetType(value: Target) {
+  // 如果有__v_skip或者对象不能扩展
+  return value[ReactiveFlags.SKIP] || !Object.isExtensible(value)
+    ? TargetType.INVALID //0
+    : targetTypeMap(toRawType(value)) //获取类型
+}
+
+export function reactive(target: object) {
   return createReactiveObject(
     target,
     false,
     mutableHandlers,
-    mutableCollectionHandlers,
+    // mutableCollectionHandlers, //暂时不知道
     reactiveMap
   )
 }
@@ -44,30 +99,37 @@ function createReactiveObject(
   target: Target,
   isReadonly: boolean,
   baseHandlers: ProxyHandler<any>,
-  collectionHandlers: ProxyHandler<any>,
+  // collectionHandlers: ProxyHandler<any>, //MapSet等的处理，暂时不用
   proxyMap: WeakMap<Target, any>
 ) {
+  //reactive只能包装对象
   if (!isObject(target)) {
     return target
   }
+  // 如果以及是reactive数据了直接返回/TODO:
   if (
     target[ReactiveFlags.RAW] &&
     !(isReadonly && target[ReactiveFlags.IS_REACTIVE])
   ) {
     return target
   }
+  // 是否在proxyMap上有的
   const existingProxy = proxyMap.get(target)
+  // 存在说明收集过了直接返回
   if (existingProxy) {
     return existingProxy
   }
-  // only specific value types can be observed.
+  // 只能是一些特定的对象才能被proxy
   const targetType = getTargetType(target)
+  // 如果是 TargetType.INVALID 则不能被监听
   if (targetType === TargetType.INVALID) {
     return target
   }
   const proxy = new Proxy(
     target,
-    targetType === TargetType.COLLECTION ? collectionHandlers : baseHandlers
+    // 除了对象和数组，如果是上面的Map等用特殊的collectionHandlers，这里注释掉，暂时看对象和数组
+    // targetType === TargetType.COLLECTION ? collectionHandlers : baseHandlers
+    baseHandlers
   )
   proxyMap.set(target, proxy)
   return proxy
