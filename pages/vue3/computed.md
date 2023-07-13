@@ -122,7 +122,7 @@ export class ComputedRefImpl<T> {
 }
 ```
 
-## effect 函数执行触发 getter
+## effect 函数执行触发 computedRefImpl 的 getter
 
 getter 执行会调用当前 effect，然后通过 return this.effect.run()取值
 
@@ -189,3 +189,7 @@ export function trackEffects(
 
 ComputedRefImpl 就是一个 effect，通过 scheduler 触发的 proxy 依赖，初始为 dirty，然后执行后为 false 就不用重新执行了取之前的数据，数据改变 scheduler 里把数据变为 true 然后又能执行
 setter 是走正常的 setter,而不是走 ComputedRefImpl 的 setter,computed 不支持修改生成的数据
+
+## 核心逻辑总结
+
+实际上是一个懒执行的副作用函数，computed 会 返回 computedRefImpl 类，这个类有属性访问器，也能实现 Proxy 一样的拦截功能，用\_value 缓存上一次计算的值， dirty 设置为 false，下一次直接访问缓存的值，如果为 true 才重新执行副作用

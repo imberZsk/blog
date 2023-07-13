@@ -163,3 +163,7 @@ function triggerEffect(
   }
 }
 ```
+
+## 核心逻辑总结
+
+ref 会 返回 RefImpl 类，这个类有属性访问器，也能实现 Proxy 一样的拦截功能，类上会保存一个\_value 来存数据，如果是对象会走 reactive

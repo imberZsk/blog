@@ -499,3 +499,7 @@ toRaw（转原始对象） markRow（标记不能被代理，本质是加上\_v_
 分别对应 deleteProperty has ownKeys 代理
 
 ...toRefs 是把属性都拿出来使用，单个用
+
+## 核心逻辑总结
+
+通过 Proxy 代理对象，触发 setter 的时候通过 track 收集依赖到 WeakMap 里，改变数据的时候通过 trigger 触发依赖，找到之前的函数执行重新渲染页面
