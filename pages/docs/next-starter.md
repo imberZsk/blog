@@ -212,3 +212,5 @@ Edge Runtime 基于 Web API。
 
 suspense 是多个子组件请求
 loading 是整个页面
+
+## 图片只改名字会有缓存，更新不了
