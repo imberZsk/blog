@@ -185,3 +185,99 @@ export default async function Page({ params }: { params: { id: string } }) {
   )
 }
 ```
+
+## 图片优化
+
+sharp 都处理成了 webp，都有 memory cache 原生懒加载 lazy loading
+
+## 资源缓存
+
+除了 html，都会走强缓存 cache control (disk cache)
+
+## 环境变量
+
+nextjs 默认环境变量只能给服务端，客户端需要 NEXT_PUBLIC
+所以常用
+
+```js
+NEXT_PUBLIC_BASE_URL=/api
+```
+
+## 代理
+
+## sitemap
+
+app/sitemap.tsx
+
+```js
+import { MetadataRoute } from 'next'
+
+export default function sitemap(): MetadataRoute.Sitemap {
+  return [
+    {
+      url: 'https://citywalk.meizu.cn',
+      lastModified: new Date()
+    },
+    {
+      url: 'https://citywalk.meizu.cn/verify',
+      lastModified: new Date()
+    }
+  ]
+}
+```
+
+## RSC
+
+非交互的组使用服务器组件，初始页面加载速度更快，并且客户端 JavaScript 包大小减小
+
+在应用程序中使用客户端交互性时，才会添加其他 JavaScript
+
+默认服务端组件在服务端渲染完成，使用'use client'当作客户端组件在服务器上预渲染并在客户端上进行水化，也就是说客户端组件部分 hydrated，选择性注水，也就是服务端组件不用水合（服务端组件服务端渲染完成，客户端组件在服务端预渲染然后客户端注水）
+
+虽然不能在客户端组件里使用服务端组件，不过可以通过 children props 插槽的方式，这样可以拆更细
+
+RSC 不支持 context 服务器组件不是交互式的
+
+Next 直接连接数据库
+
+```js
+import { usePathname } from 'next/navigation'
+const pathname = usePathname()
+```
+
+router.prefetch()：该 useRouter 钩子可用于以编程方式预取路由。
+
+fetch 用于服务端请求，react-query 和 swr 用于客户端
+
+generateStaticParams 可以在构建时静态生成路由
+
+## 选择性水合
+
+使用 SSR，在用户可以查看页面并与页面交互之前需要完成一系列步骤：
+
+首先，在服务器上获取给定页面的所有数据。
+然后服务器呈现该页面的 HTML。
+页面的 HTML、CSS 和 JavaScript 将发送到客户端。
+使用生成的 HTML 和 CSS 显示非交互式用户界面。
+最后，反应水合物用户界面使其具有交互性。
+
+这些步骤是连续的和阻塞的，这意味着服务器只能在获取所有数据后才能呈现页面的 HTML。而且，在客户端，只有下载了页面中所有组件的代码后，React 才能对 UI 进行水合。
+
+结合 React 和 Next.js 的 SSR 通过尽快向用户显示非交互式页面来帮助提高感知加载性能
+
+流式传输允许您将页面的 HTML 分解为更小的块，并逐步将这些块从服务器发送到客户端
+
+https://nextjs.org/_next/image?url=%2Fdocs%2Fdark%2Fserver-rendering-with-streaming.png&w=3840&q=75&dpl=dpl_H1LQCiRipv61gLuhmuJepgzeSCmK
+
+这使得页面的某些部分能够更快地显示，而无需等待所有数据加载后才能呈现任何 UI。
+
+通过使用 Suspense，您可以获得以下好处：
+
+流式服务器渲染- 逐步将 HTML 从服务器渲染到客户端。
+选择性水合- React 根据用户交互优先考虑哪些组件首先进行交互。
+
+`import { NextResponse } from 'next/server'` route.ts
+`import { cookies } from 'next/headers'`
+`import { headers } from 'next/headers'`
+`export const revalidate = 60`
+`import { redirect } from 'next/navigation'`
