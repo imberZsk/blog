@@ -94,7 +94,7 @@ export function reactive(target: object) {
     target,
     false,
     mutableHandlers,
-    // mutableCollectionHandlers, //暂时不知道
+    // mutableCollectionHandlers, //Map和Set等的处理
     reactiveMap
   )
 }

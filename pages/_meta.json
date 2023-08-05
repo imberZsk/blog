@@ -3,6 +3,10 @@
     "title": "Home",
     "type": "page"
   },
+  "review": {
+    "title": "review",
+    "type": "page"
+  },
   "docs": {
     "title": "Docs",
     "type": "page"

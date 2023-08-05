@@ -6,9 +6,6 @@ const config: DocsThemeConfig = {
   project: {
     link: 'https://github.com/imberZsk'
   },
-  chat: {
-    link: 'https://github.com/imberZsk'
-  },
   docsRepositoryBase: 'https://github.com/imberZsk',
   footer: {
     text: '@imber Powerby Nextra'
