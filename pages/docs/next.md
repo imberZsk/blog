@@ -281,3 +281,5 @@ https://nextjs.org/_next/image?url=%2Fdocs%2Fdark%2Fserver-rendering-with-stream
 `import { headers } from 'next/headers'`
 `export const revalidate = 60`
 `import { redirect } from 'next/navigation'`
+
+## 中间件
