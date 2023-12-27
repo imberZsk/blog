@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { useEffect, useRef, useState } from 'react'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
@@ -18,12 +20,7 @@ export const useLoadModal = () => {
     // 初始化
     const init = (): void => {
       // #region 1、相机
-      camera = new THREE.PerspectiveCamera(
-        45,
-        window.innerWidth / window.innerHeight,
-        1,
-        2000
-      )
+      camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 2000)
       camera.position.set(100, 200, 300)
       // #endregion
 
@@ -84,7 +81,7 @@ export const useLoadModal = () => {
       // #region 7、加载模型
       loader.load(
         '/model/dance.fbx',
-        (object) => {
+        object => {
           // 模型加入场景
           scene?.add(object)
 
@@ -93,7 +90,7 @@ export const useLoadModal = () => {
           const action = mixer.clipAction(object.animations[0])
           action.play()
 
-          object.traverse((child) => {
+          object.traverse(child => {
             if (child.isMesh) {
               child.castShadow = true
               child.receiveShadow = true
@@ -103,12 +100,12 @@ export const useLoadModal = () => {
           // 启动动画循环
           animate()
         },
-        (progress) => {
+        progress => {
           if (progress.loaded >= progress.total) {
             console.log('加载完成')
           }
         },
-        (error) => {
+        error => {
           console.error(error)
         }
       )

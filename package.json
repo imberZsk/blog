@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "prepare": "husky install",
+    "lint-staged": "npx lint-staged"
   },
   "dependencies": {
     "next": "14.0.4",
@@ -15,6 +17,8 @@
     "three": "^0.160.0"
   },
   "devDependencies": {
+    "@commitlint/cli": "^18.4.3",
+    "@commitlint/config-conventional": "^18.4.3",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
@@ -22,8 +26,17 @@
     "autoprefixer": "^10.0.1",
     "eslint": "^8",
     "eslint-config-next": "14.0.4",
+    "husky": "^8.0.3",
+    "lint-staged": "^15.2.0",
     "postcss": "^8",
+    "prettier": "^3.1.1",
+    "prettier-plugin-tailwindcss": "^0.5.9",
     "tailwindcss": "^3.3.0",
+    "turbo": "^1.11.2",
     "typescript": "^5"
+  },
+  "packageManager": "pnpm@8.11.0",
+  "engines": {
+    "node": ">=20.0.0"
   }
 }
