@@ -11,7 +11,14 @@
     "lint-staged": "npx lint-staged"
   },
   "dependencies": {
+    "@prisma/client": "5.7.1",
+    "@tiptap/core": "^2.1.13",
+    "@tiptap/extension-horizontal-rule": "^2.1.13",
+    "@tiptap/extension-underline": "^2.1.13",
+    "@tiptap/react": "^2.1.13",
+    "@tiptap/starter-kit": "^2.1.13",
     "next": "14.0.4",
+    "prisma": "^5.7.1",
     "react": "^18",
     "react-dom": "^18",
     "three": "^0.160.0"

@@ -6,6 +6,10 @@ export default function Dashboard() {
       <Link href="/dance" className="text-black">
         dance
       </Link>
+      <Link href="/login" className="text-black">
+        去登陆注册
+      </Link>
+      首页
     </div>
   )
 }
