@@ -1,10 +1,16 @@
 'use client'
 
-// import { useState } from 'react'
+import { useState } from 'react'
 import { defaultExtensions } from './extensions'
 import { useEditor, EditorContent } from '@tiptap/react'
 
 const Editor = () => {
+  const [data, setData] = useState({
+    userId: 2,
+    title: '',
+    content: ''
+  })
+
   const editor = useEditor({
     extensions: [...defaultExtensions],
     content: '<p>Hello World! </p>',
@@ -16,12 +22,6 @@ const Editor = () => {
   })
 
   if (!editor) return null
-
-  // const [data, setData] = useState({
-  //   username: '',
-  //   password: '',
-  //   email: ''
-  // })
 
   return (
     <div className="mx-auto mt-[80px] w-[1200px]">
@@ -77,15 +77,30 @@ const Editor = () => {
         </div>
       </div>
 
+      <input
+        type="text"
+        placeholder="文章标题"
+        onChange={e => {
+          setData({
+            ...data,
+            title: e.target.value
+          })
+        }}
+      />
+
       <EditorContent editor={editor} className="editorContent" />
 
       <button
         className="rounded-[4px] bg-pink-200 p-[4px]"
         onClick={() => {
-          const data = editor.getJSON().content
+          const curData = {
+            ...data,
+            content: JSON.stringify(editor.getJSON().content)
+          }
+
           fetch('/api/editor/create', {
             method: 'POST',
-            body: JSON.stringify(data)
+            body: JSON.stringify(curData)
           })
             .then(res => res.json())
             .then(res => console.log(res, 'res'))
