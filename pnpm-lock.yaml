@@ -8,12 +8,15 @@ dependencies:
   '@prisma/client':
     specifier: 5.7.1
     version: 5.7.1(prisma@5.7.1)
+  '@tiptap-pro/extension-file-handler':
+    specifier: ^2.5.1
+    version: 2.5.1(@tiptap/core@2.1.13)(@tiptap/pm@2.1.13)
   '@tiptap/core':
     specifier: ^2.1.13
     version: 2.1.13(@tiptap/pm@2.1.13)
-  '@tiptap/extension-horizontal-rule':
+  '@tiptap/extension-image':
     specifier: ^2.1.13
-    version: 2.1.13(@tiptap/core@2.1.13)(@tiptap/pm@2.1.13)
+    version: 2.1.13(@tiptap/core@2.1.13)
   '@tiptap/extension-underline':
     specifier: ^2.1.13
     version: 2.1.13(@tiptap/core@2.1.13)
@@ -606,6 +609,16 @@ packages:
       tslib: 2.6.2
     dev: false
 
+  /@tiptap-pro/extension-file-handler@2.5.1(@tiptap/core@2.1.13)(@tiptap/pm@2.1.13):
+    resolution: {integrity: sha512-/H18i4oDTZ+Op0HG6dnNs9pWnjGaX5eXz7Gg+A/XmANGEZYqGtVeb8HGWW1JNcdTPR3fn2d6xWf+AUn0HxTYaw==}
+    peerDependencies:
+      '@tiptap/core': ^2.0.0
+      '@tiptap/pm': ^2.0.0
+    dependencies:
+      '@tiptap/core': 2.1.13(@tiptap/pm@2.1.13)
+      '@tiptap/pm': 2.1.13
+    dev: false
+
   /@tiptap/core@2.1.13(@tiptap/pm@2.1.13):
     resolution: {integrity: sha512-cMC8bgTN63dj1Mv82iDeeLl6sa9kY0Pug8LSalxVEptRmyFVsVxGgu2/6Y3T+9aCYScxfS06EkA8SdzFMAwYTQ==}
     peerDependencies:
@@ -740,6 +753,14 @@ packages:
     dependencies:
       '@tiptap/core': 2.1.13(@tiptap/pm@2.1.13)
       '@tiptap/pm': 2.1.13
+    dev: false
+
+  /@tiptap/extension-image@2.1.13(@tiptap/core@2.1.13):
+    resolution: {integrity: sha512-7oVAos+BU4KR/zQsfltrd8hgIxKxyxZ19dhwb1BJI2Nt3Mnx+yFPRlRSehID6RT9dYqgW4UW5d6vh/3HQcYYYw==}
+    peerDependencies:
+      '@tiptap/core': ^2.0.0
+    dependencies:
+      '@tiptap/core': 2.1.13(@tiptap/pm@2.1.13)
     dev: false
 
   /@tiptap/extension-italic@2.1.13(@tiptap/core@2.1.13):

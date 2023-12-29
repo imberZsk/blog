@@ -11,6 +11,8 @@ const Editor = () => {
     content: ''
   })
 
+  const [isShow, setIsShow] = useState(false)
+
   const editor = useEditor({
     extensions: [...defaultExtensions],
     content: '<p>Hello World! </p>',
@@ -21,53 +23,84 @@ const Editor = () => {
     }
   })
 
+  // 上传图片
+  const addImage = () => {
+    const input = document.createElement('input')
+    input.type = 'file'
+    input.accept = 'image/*'
+    input.onchange = async () => {
+      if (input.files?.length) {
+        const reader = new FileReader()
+        reader.readAsDataURL(input.files[0])
+        reader.onloadend = function (e) {
+          editor
+            ?.chain()
+            .focus()
+            .setImage({
+              src: e.target?.result as string
+            })
+            .run()
+        }
+      }
+    }
+    input.click()
+  }
+
+  // @
+  const mention = () => {
+    setIsShow(true)
+  }
+
   if (!editor) return null
 
   return (
     <div className="mx-auto mt-[80px] w-[1200px]">
+      <h1 className="mb-[40px] text-center text-[60px]">编辑器开发中</h1>
       <div className="mb-[80px] flex gap-2">
         <button
           onClick={() => editor.chain().focus().toggleItalic().run()}
           disabled={!editor.can().chain().focus().toggleItalic().run()}
           className={editor.isActive('italic') ? 'is-active' : ''}
         >
-          italic
+          italic(⌘ + I)
         </button>
         <button
           onClick={() => editor.chain().focus().toggleBold().run()}
           disabled={!editor.can().chain().focus().toggleBold().run()}
           className={editor.isActive('bold') ? 'is-active' : ''}
         >
-          bold
+          bold(⌘ + B)
         </button>
         <button
           onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
           className={editor.isActive('heading', { level: 1 }) ? 'is-active' : ''}
         >
-          h1
+          h1(⌘ + option + 1)
         </button>
         <button
           onClick={() => editor.chain().focus().toggleUnderline().run()}
           disabled={!editor.can().chain().focus().toggleUnderline().run()}
           className={editor.isActive('underline') ? 'is-active' : ''}
         >
-          underline
+          underline(⌘ + U)
         </button>
         <button
           onClick={() => editor.chain().focus().toggleStrike().run()}
           disabled={!editor.can().chain().focus().toggleStrike().run()}
           className={editor.isActive('strike') ? 'is-active' : ''}
         >
-          strike
+          strike(⌘ + ⇧ + S)
         </button>
         <button
           onClick={() => editor.chain().focus().toggleBlockquote().run()}
           disabled={!editor.can().chain().focus().toggleBlockquote().run()}
           className={editor.isActive('blockquote') ? 'is-active' : ''}
         >
-          blockquote
+          blockquote引用
         </button>
-        <button onClick={() => editor.chain().focus().setHorizontalRule().run()}>horizontal rule</button>
+        <button onClick={() => editor.chain().focus().setHorizontalRule().run()}>horizontal rule分割线</button>
+        <button onClick={addImage}>上传图片</button>
+        <button onClick={mention}>提及@</button>
         <div
           onClick={() => {
             console.log(editor.getJSON())
@@ -98,16 +131,53 @@ const Editor = () => {
             content: JSON.stringify(editor.getJSON().content)
           }
 
-          fetch('/api/editor/create', {
-            method: 'POST',
-            body: JSON.stringify(curData)
-          })
-            .then(res => res.json())
-            .then(res => console.log(res, 'res'))
+          console.log(curData)
+          // fetch('/api/editor/create', {
+          //   method: 'POST',
+          //   body: JSON.stringify(curData)
+          // })
+          //   .then(res => res.json())
+          //   .then(res => console.log(res, 'res'))
         }}
       >
         发布
       </button>
+
+      {isShow && (
+        <div
+          className={`flex-center opacity-1 visible} absolute left-0 top-0 z-[999] flex h-screen w-screen items-center justify-center bg-[rgba(0,0,0,0.5)]`}
+        >
+          <div className="md425:w-[432px] md425:p-[32px_24px_24px_24px] z-[1000] w-[600px] rounded-[8px] bg-[rgba(255,255,255,0.97)] p-[24px] shadow-[0px_12px_48px_1px_rgba(0,0,0,0.2)] dark:bg-[rgba(54,58,64,0.8)] dark:backdrop-blur-lg">
+            {/* 标题 */}
+            <h2 className="text-center text-[18px] font-bold leading-[32px] text-[#2D3748] dark:text-[#ffffff]">
+              标题
+            </h2>
+
+            {/* 内容 */}
+            <div className="flex flex-col gap-4 py-[16px] text-center">
+              <button
+                className="cursor-pointer text-[#ff4132] dark:text-[#e65045]"
+                onClick={() => {
+                  setIsShow(false)
+                  // 也可以插入一段span
+                  editor.commands.insertContent('@ikun1号')
+                }}
+              >
+                @ikun1号
+              </button>
+              <button
+                className="cursor-pointer text-[#ff4132] dark:text-[#e65045]"
+                onClick={() => {
+                  setIsShow(false)
+                  editor.commands.insertContent('@ikun2号')
+                }}
+              >
+                @ikun2号
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
