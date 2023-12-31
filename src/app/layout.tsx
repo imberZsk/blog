@@ -1,5 +1,7 @@
 import type { Metadata } from 'next'
 import './globals.css'
+import Nav from '@/ui/nav'
+import { ThemeProvider } from '@/ui/theme-provider'
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -8,8 +10,13 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
-      <body>{children}</body>
+    <html lang="en" suppressHydrationWarning>
+      <body className="bg-[#fff] text-gray-700 dark:bg-[#000] dark:text-gray-200">
+        <ThemeProvider attribute="class" defaultTheme="dark">
+          <Nav></Nav>
+          {children}
+        </ThemeProvider>
+      </body>
     </html>
   )
 }

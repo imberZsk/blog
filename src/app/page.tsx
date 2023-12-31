@@ -1,15 +1,9 @@
-import Link from 'next/link'
+import ThreeModel from '@/ui/dance/three-model'
 
 export default function Dashboard() {
   return (
-    <div>
-      <Link href="/dance" className="text-black">
-        dance
-      </Link>
-      <Link href="/login" className="text-black">
-        去登陆注册
-      </Link>
-      首页
+    <div className="absolute left-0 top-0 z-[-1]">
+      <ThreeModel />
     </div>
   )
 }

@@ -1,3 +1,4 @@
+import Editor from '@/ui/editor'
 import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
 
@@ -12,8 +13,7 @@ const Page = async ({ params: { id } }: { params: { id: string } }) => {
 
   return (
     <div>
-      <div>{res.title} </div>
-      <div>{res.content}</div>
+      <Editor editable={false} content={res.content}></Editor>
     </div>
   )
 }

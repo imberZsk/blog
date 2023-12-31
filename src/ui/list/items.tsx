@@ -11,12 +11,16 @@ type Post = {
   userId: number
 }[]
 
-export default function Itemes({ posts }: { posts: Post }) {
+export default function Items({ posts }: { posts: Post }) {
   return (
     <div className="flex flex-col">
       {posts.map((item, index) => {
         return (
-          <Link key={index} href={`/content/${item.id}`}>
+          <Link
+            key={index}
+            href={`/content/${item.id}`}
+            className="my-[10px] transition-colors hover:text-[#000] dark:hover:text-[#fff]"
+          >
             {item.title}
           </Link>
         )
