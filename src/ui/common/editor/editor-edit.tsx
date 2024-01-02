@@ -1,17 +1,32 @@
+/* eslint-disable no-unused-vars */
+// @ts-nocheck
+
 'use client'
 
 import { useState } from 'react'
 import { defaultExtensions } from './extensions'
 import { useEditor, EditorContent } from '@tiptap/react'
+import {
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Button,
+  useDisclosure,
+  Input
+} from '@nextui-org/react'
 
-const EditorWrapper = () => {
+const EditorEdit = () => {
   const [data, setData] = useState({
     userId: 2,
     title: '',
     content: ''
   })
 
-  const [isShow, setIsShow] = useState(false)
+  const { isOpen, onOpen, onOpenChange } = useDisclosure()
+
+  const [isShowMention, setIsShowMention] = useState(false)
 
   const editor = useEditor({
     editable: true,
@@ -19,7 +34,7 @@ const EditorWrapper = () => {
     content: '<p>来编写你的文章吧～</p>',
     editorProps: {
       attributes: {
-        class: 'prose dark:prose-invert prose-sm sm:prose-base lg:prose-lg xl:prose-2xl m-5 focus:outline-none'
+        class: 'prose dark:prose-invert prose-sm sm:prose-base lg:prose-lg xl:prose-2xl py-5 focus:outline-none'
       }
     }
   })
@@ -57,6 +72,7 @@ const EditorWrapper = () => {
   return (
     <div className="mx-auto mt-[80px] w-[1200px]">
       <h1 className="mb-[40px] text-center text-[60px]">编辑器开发中</h1>
+
       <div className="mb-[80px] flex gap-2">
         <button
           onClick={() => editor.chain().focus().toggleItalic().run()}
@@ -102,49 +118,76 @@ const EditorWrapper = () => {
         <button onClick={() => editor.chain().focus().setHorizontalRule().run()}>horizontal rule分割线</button>
         <button onClick={addImage}>上传图片</button>
         <button onClick={mention}>提及@</button>
-        <div
+        <button
           onClick={() => {
             console.log(editor.getJSON())
           }}
         >
-          test
-        </div>
+          获取编辑器数据
+        </button>
+        <button
+          onClick={() => {
+            const curData = {
+              ...data,
+              content: JSON.stringify(editor.getJSON().content)
+            }
+
+            console.log(curData)
+            // fetch('/api/editor/create', {
+            //   method: 'POST',
+            //   body: JSON.stringify(curData)
+            // })
+            //   .then(res => res.json())
+            //   .then(res => console.log(res, 'res'))
+          }}
+        >
+          发布文章
+        </button>
       </div>
 
-      <input
-        type="text"
-        placeholder="文章标题"
-        onChange={e => {
-          setData({
-            ...data,
-            title: e.target.value
-          })
-        }}
-      />
+      <div className="mb-[80px] flex gap-2">
+        {/* <button onClick={onOpen} className="outline-none">
+          投票（新Nodes）
+        </button> */}
+        <button
+          onClick={() => {
+            editor.commands.setVote({
+              items: [{ a: 1 }, { a: 2 }],
+              time: 1
+            })
+          }}
+          className="outline-none"
+        >
+          投票（新Nodes）
+        </button>
+      </div>
 
-      <EditorContent editor={editor} className="editorContent" />
+      <div className="mx-auto w-[708px]">
+        {/* <input
+          type="text"
+          className="bg-none text-[40px] font-bold outline-none"
+          placeholder="文章标题"
+          onChange={e => {
+            setData({
+              ...data,
+              title: e.target.value
+            })
+          }}
+        /> */}
 
-      <button
-        className="rounded-[4px] bg-pink-200 p-[4px]"
-        onClick={() => {
-          const curData = {
-            ...data,
-            content: JSON.stringify(editor.getJSON().content)
-          }
+        {/* TODO:怎么获取数据 */}
+        <div className="h-[70px]">
+          <div
+            contentEditable={true}
+            className="m-0 h-full whitespace-pre-wrap break-all text-[40px] outline-none"
+            spellCheck="true"
+          ></div>
+        </div>
+        <EditorContent editor={editor} className="editorContent" />
+      </div>
 
-          console.log(curData)
-          // fetch('/api/editor/create', {
-          //   method: 'POST',
-          //   body: JSON.stringify(curData)
-          // })
-          //   .then(res => res.json())
-          //   .then(res => console.log(res, 'res'))
-        }}
-      >
-        发布
-      </button>
-
-      {isShow && (
+      {/* 提及 */}
+      {isShowMention && (
         <div
           className={`flex-center opacity-1 visible} absolute left-0 top-0 z-[999] flex h-screen w-screen items-center justify-center bg-[rgba(0,0,0,0.5)]`}
         >
@@ -159,7 +202,7 @@ const EditorWrapper = () => {
               <button
                 className="cursor-pointer text-[#ff4132] dark:text-[#e65045]"
                 onClick={() => {
-                  setIsShow(false)
+                  setIsShowMention(false)
                   // 也可以插入一段span
                   editor.commands.insertContent('@ikun1号')
                 }}
@@ -169,7 +212,7 @@ const EditorWrapper = () => {
               <button
                 className="cursor-pointer text-[#ff4132] dark:text-[#e65045]"
                 onClick={() => {
-                  setIsShow(false)
+                  setIsShowMention(false)
                   editor.commands.insertContent('@ikun2号')
                 }}
               >
@@ -179,8 +222,50 @@ const EditorWrapper = () => {
           </div>
         </div>
       )}
+
+      {/* 投票 */}
+      <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+        <ModalContent>
+          {onClose => (
+            <>
+              <ModalHeader className="flex flex-col gap-1">创建投票</ModalHeader>
+              <ModalBody>
+                <Input
+                  autoFocus
+                  endContent={<div className="pointer-events-none flex-shrink-0 text-2xl text-default-400" />}
+                  label="Email"
+                  placeholder="Enter your email"
+                  variant="bordered"
+                />
+                <Input
+                  endContent={<div className="pointer-events-none flex-shrink-0 text-2xl text-default-400" />}
+                  label="Password"
+                  placeholder="Enter your password"
+                  type="password"
+                  variant="bordered"
+                />
+              </ModalBody>
+              <ModalFooter>
+                <Button color="danger" variant="light" onPress={onClose}>
+                  取消
+                </Button>
+                <Button
+                  color="primary"
+                  onPress={() => {
+                    editor.commands.setVote('vote')
+                    // editor里插入元素
+                    onClose()
+                  }}
+                >
+                  创建
+                </Button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
     </div>
   )
 }
 
-export default EditorWrapper
+export default EditorEdit

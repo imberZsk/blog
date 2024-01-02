@@ -2,6 +2,7 @@ import StarterKit from '@tiptap/starter-kit'
 import TiptapUnderline from '@tiptap/extension-underline'
 // import HorizontalRule from './horizontalRule'
 import Image from '@tiptap/extension-image'
+import Vote from './custom/extension-vote'
 // import FileHandler from '@tiptap-pro/extension-file-handler'
 
 export const defaultExtensions = [
@@ -26,7 +27,14 @@ export const defaultExtensions = [
     }
   }),
   TiptapUnderline,
-  Image
+  Image,
+  Vote.configure({
+    Vote: {
+      HTMLAttributes: {
+        class: 'h-[100px] w-full bg-pink'
+      }
+    }
+  })
   // FileHandler.configure({
   //   allowedMimeTypes: ['image/png', 'image/jpeg', 'image/gif', 'image/webp'],
   //   onDrop: (currentEditor, files, pos) => {

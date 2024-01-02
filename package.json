@@ -11,12 +11,16 @@
     "lint-staged": "npx lint-staged"
   },
   "dependencies": {
+    "@nextui-org/react": "^2.2.9",
+    "@nextui-org/system": "^2.0.15",
+    "@nextui-org/theme": "^2.1.17",
     "@prisma/client": "5.7.1",
     "@tiptap/core": "^2.1.13",
     "@tiptap/extension-image": "^2.1.13",
     "@tiptap/extension-underline": "^2.1.13",
     "@tiptap/react": "^2.1.13",
     "@tiptap/starter-kit": "^2.1.13",
+    "framer-motion": "^10.16.16",
     "next": "14.0.4",
     "next-themes": "^0.2.1",
     "prisma": "^5.7.1",

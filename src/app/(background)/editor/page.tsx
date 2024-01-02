@@ -1,5 +1,5 @@
-import EditorWrapper from '@/ui/common/editor/editor-edit'
+import EditorEdit from '@/ui/common/editor/editor-edit'
 
 export default function Page() {
-  return <EditorWrapper></EditorWrapper>
+  return <EditorEdit></EditorEdit>
 }

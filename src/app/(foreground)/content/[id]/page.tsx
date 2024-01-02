@@ -1,4 +1,4 @@
-import Editor from '@/ui/common/editor/editor-show'
+import EditorShow from '@/ui/common/editor/editor-show'
 import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
 
@@ -12,12 +12,10 @@ const Page = async ({ params: { id } }: { params: { id: string } }) => {
   if (!res) return null
 
   return (
-    <main>
-      <div className="mx-auto w-[690px]">
-        <h1 className="p-[20px] text-2xl font-bold">{res.title}</h1>
-        <Editor editable={false} content={res.content}></Editor>
-      </div>
-    </main>
+    <div className="mx-auto w-[690px]">
+      <h1 className="p-[20px] text-2xl font-bold">{res.title}</h1>
+      <EditorShow editable={false} content={res.content}></EditorShow>
+    </div>
   )
 }
 

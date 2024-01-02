@@ -3,11 +3,7 @@
 import Login from '@/ui/background/login'
 
 const Page = () => {
-  return (
-    <div>
-      <Login></Login>
-    </div>
-  )
+  return <Login></Login>
 }
 
 export default Page
