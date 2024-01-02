@@ -1,4 +1,4 @@
-import ThreeModel from '@/ui/dance/three-model'
+import ThreeModel from '@/ui/foreground/dance/three-model'
 
 export default function Dashboard() {
   return (

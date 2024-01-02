@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import ThemeButton from './theme-button'
+import ThemeButton from '../common/theme-button'
 
 export default function Nav() {
   return (

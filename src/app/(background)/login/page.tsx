@@ -1,6 +1,6 @@
 'use client'
 
-import Login from '@/ui/login'
+import Login from '@/ui/background/login'
 
 const Page = () => {
   return (

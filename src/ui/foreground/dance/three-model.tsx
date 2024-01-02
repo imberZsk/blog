@@ -4,7 +4,7 @@ import { useLoadModal } from './hooks'
 
 const ThreeModel = () => {
   const { containerRef } = useLoadModal()
-  return <div className="w-full h-full" ref={containerRef} />
+  return <div className="h-full w-full" ref={containerRef} />
 }
 
 export default ThreeModel

@@ -1,4 +1,4 @@
-import Items from '@/ui/list/items'
+import Items from '@/ui/foreground/blog/items'
 import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
 

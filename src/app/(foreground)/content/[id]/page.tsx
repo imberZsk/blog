@@ -1,4 +1,4 @@
-import Editor from '@/ui/editor/editor-show'
+import Editor from '@/ui/common/editor/editor-show'
 import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
 
