@@ -5,7 +5,6 @@ const prisma = new PrismaClient()
 export default async function List() {
   const posts = await prisma.post.findMany()
 
-  console.log(posts)
   return (
     <main>
       <div className="mx-auto w-[650px]">
