@@ -29,10 +29,8 @@ export const defaultExtensions = [
   TiptapUnderline,
   Image,
   Vote.configure({
-    Vote: {
-      HTMLAttributes: {
-        class: 'h-[100px] w-full bg-pink'
-      }
+    HTMLAttributes: {
+      class: 'p-[20px] bg-[#ccc] rounded-[8px] w-full bg-[#ccc] my-[10px]'
     }
   })
   // FileHandler.configure({

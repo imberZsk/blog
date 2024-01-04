@@ -24,6 +24,18 @@ const EditorEdit = () => {
     content: ''
   })
 
+  const [voteData, setVoteData] = useState({
+    title: '',
+    items: [
+      {
+        title: ''
+      },
+      {
+        title: ''
+      }
+    ]
+  })
+
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
 
   const [isShowMention, setIsShowMention] = useState(false)
@@ -64,7 +76,7 @@ const EditorEdit = () => {
 
   // @
   const mention = () => {
-    setIsShow(true)
+    setIsShowMention(true)
   }
 
   if (!editor) return null
@@ -146,18 +158,7 @@ const EditorEdit = () => {
       </div>
 
       <div className="mb-[80px] flex gap-2">
-        {/* <button onClick={onOpen} className="outline-none">
-          投票（新Nodes）
-        </button> */}
-        <button
-          onClick={() => {
-            editor.commands.setVote({
-              items: [{ a: 1 }, { a: 2 }],
-              time: 1
-            })
-          }}
-          className="outline-none"
-        >
+        <button onClick={onOpen} className="outline-none">
           投票（新Nodes）
         </button>
       </div>
@@ -233,16 +234,36 @@ const EditorEdit = () => {
                 <Input
                   autoFocus
                   endContent={<div className="pointer-events-none flex-shrink-0 text-2xl text-default-400" />}
-                  label="Email"
-                  placeholder="Enter your email"
+                  placeholder="填写投票标题"
                   variant="bordered"
+                  onChange={e => {
+                    setVoteData({ ...voteData, title: e.target.value })
+                  }}
+                />
+                <Input
+                  autoFocus
+                  endContent={<div className="pointer-events-none flex-shrink-0 text-2xl text-default-400" />}
+                  label="选项1"
+                  placeholder="填写投票选项"
+                  variant="bordered"
+                  onChange={e => {
+                    setVoteData({
+                      ...voteData,
+                      items: [{ title: e.target.value }, { title: voteData.items[1].title }]
+                    })
+                  }}
                 />
                 <Input
                   endContent={<div className="pointer-events-none flex-shrink-0 text-2xl text-default-400" />}
-                  label="Password"
-                  placeholder="Enter your password"
-                  type="password"
+                  label="选项2"
+                  placeholder="填写投票选项"
                   variant="bordered"
+                  onChange={e => {
+                    setVoteData({
+                      ...voteData,
+                      items: [{ title: voteData.items[0].title }, { title: e.target.value }]
+                    })
+                  }}
                 />
               </ModalBody>
               <ModalFooter>
@@ -252,8 +273,7 @@ const EditorEdit = () => {
                 <Button
                   color="primary"
                   onPress={() => {
-                    editor.commands.setVote('vote')
-                    // editor里插入元素
+                    editor.commands.setVote(voteData)
                     onClose()
                   }}
                 >

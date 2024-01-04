@@ -50,6 +50,9 @@ dependencies:
   react-dom:
     specifier: ^18
     version: 18.2.0(react@18.2.0)
+  state:
+    specifier: link:@tiptap/pm/state
+    version: link:@tiptap/pm/state
   three:
     specifier: ^0.160.0
     version: 0.160.0
