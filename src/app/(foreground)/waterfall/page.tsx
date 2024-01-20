@@ -3,112 +3,135 @@
 import { useRef, useState, useEffect } from 'react'
 import { data } from './constant'
 import Image from 'next/image'
+import debounce from 'lodash.debounce'
 
 export default function WaterFall() {
+  // 数据
   const [items, setItems] = useState<typeof data>([])
+  // 容器
   const containerRef = useRef<HTMLDivElement | null>(null)
 
-  // 模拟从服务器获取数据
-  useEffect(() => {
-    // 模拟异步加载数据
-    const fetchData = async () => {
+  const threshold = 50 // 距离底部的阈值
+  // 列数
+  const columns = 3
+  // 间距
+  const gap = 10
+
+  // 计算布局函数
+  const calculatePositions = () => {
+    // 获取容器
+    const container = containerRef.current
+    if (!container) return
+    // 每列的高度数组
+    const columnHeights = new Array(columns).fill(0)
+    // 获取要排列的元素数组
+    const itemsElements = Array.from(container.children) as HTMLElement[]
+    console.log(itemsElements.length, 'length')
+    // 遍历元素数组
+    itemsElements.forEach((item, index) => {
+      //取余获取item在哪一列
+      const columnIndex = index % columns
+      //从高度数组中获取当前列的高度
+      const columnHeight = columnHeights[columnIndex]
+      // 计算每个元素的位置
+      const left = columnIndex * (item.offsetWidth + gap)
+      const top = columnHeight
+      // 移动
+      item.style.position = 'absolute'
+      item.style.transform = `translate(${left}px, ${top}px)`
+      // 更新列高度
+      columnHeights[columnIndex] += item.offsetHeight + gap
+    })
+    // 遍历完后获取最大高度
+    const containerHeight = Math.max(...columnHeights)
+    // 设置容器高度，以便滚动加载更多数据
+    container.style.height = `${containerHeight}px`
+  }
+
+  //模拟获取数据
+  const fetchData = async () => {
+    return new Promise(resolve => {
       setTimeout(() => {
-        setItems(data)
-      }, 1000)
-    }
+        resolve(data)
+      })
+    })
+  }
 
-    fetchData()
-  }, [])
-
+  // 初始化
   useEffect(() => {
+    const init = async () => {
+      const res: any = await fetchData()
+      setItems(res)
+      // window.onload = calculatePositions()
+    }
+    init()
+
     const container = containerRef.current
     if (!container) return
 
-    // 动态计算每个元素的位置
-    const calculatePositions = () => {
-      console.log(1)
-      const columns = 3 // 列数
-      const columnHeights = new Array(columns).fill(0) // 每列的高度
-
-      const itemsElements = Array.from(container.children) as HTMLElement[]
-      itemsElements.forEach((item, index) => {
-        const columnIndex = index % columns
-        const columnHeight = columnHeights[columnIndex]
-
-        // 计算每个元素的位置
-        const left = columnIndex * (item.offsetWidth + 10) // 10 是列之间的间距
-        const top = columnHeight
-
-        item.style.position = 'absolute'
-        item.style.transform = `translate(${left}px, ${top}px)`
-
-        // 更新列高度
-        columnHeights[columnIndex] += item.offsetHeight + 10 // 10 是行之间的间距
-      })
-
-      // 设置容器高度，以便滚动加载更多数据
-      const containerHeight = Math.max(...columnHeights)
-      container.style.height = `${containerHeight}px`
-    }
-
-    calculatePositions() // 初始化时执行一次计算
-
-    // 在窗口大小变化时重新计算位置
     const handleResize = () => {
       calculatePositions()
     }
 
     window.addEventListener('resize', handleResize)
+
     return () => {
       window.removeEventListener('resize', handleResize)
     }
   }, [])
 
+  // 加载更多事件
   const handleScroll = () => {
     // 判断是否滚动到底部，然后加载更多数据
-    const container = containerRef.current
-    if (!container) return
-    const scrollPosition = container.scrollHeight - container.scrollTop - container.clientHeight
-    const threshold = 50 // 距离底部的阈值
+    const windowHeight = window.innerHeight
+    const documentHeight = document.documentElement.scrollHeight
+    const scrollPosition = window.scrollY
 
-    if (scrollPosition < threshold) {
+    if (documentHeight - (scrollPosition + windowHeight) < threshold) {
       // 模拟异步加载更多数据
       const fetchMoreData = async () => {
         // 模拟从服务器获取更多数据
-        const response = await fetch('https://api.example.com/more-data')
-        const data = await response.json()
-        setItems(prevItems => [...prevItems, ...data])
+        const res: any = await fetchData()
+        setItems(prevItems => [...prevItems, ...res])
       }
 
       fetchMoreData()
     }
   }
 
+  // 监听滚动事件
   useEffect(() => {
     const container = containerRef.current
     if (!container) return
-    container.addEventListener('scroll', handleScroll)
+    const debouncedHandleScroll = debounce(handleScroll, 400)
+    window.addEventListener('scroll', debouncedHandleScroll)
     return () => {
-      container.removeEventListener('scroll', handleScroll)
+      window.removeEventListener('scroll', debouncedHandleScroll)
     }
   }, [])
 
   return (
-    <div ref={containerRef}>
+    <div ref={containerRef} className="relative w-[770px] overflow-scroll">
       {items.map((item, index) => {
         const { url_default, width, height } = item.note_card.cover
         const { display_title } = item.note_card
         return (
-          <div key={index}>
-            <div
-              style={{
-                width: '250px',
-                marginBottom: '10px' // 行之间的间距
-              }}
-            >
-              <Image src={url_default} className="h-auto w-full object-cover" width={width} height={height} alt="" />
-              <div>{display_title}</div>
-            </div>
+          <div
+            key={index}
+            style={{
+              width: '250px',
+              marginBottom: '10px' // 行之间的间距
+            }}
+          >
+            <Image
+              src={url_default}
+              className="h-auto w-full object-cover"
+              width={width}
+              height={height}
+              alt=""
+              onLoad={calculatePositions}
+            />
+            <div>{display_title}</div>
           </div>
         )
       })}
