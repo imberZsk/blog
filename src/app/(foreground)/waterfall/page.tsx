@@ -10,8 +10,8 @@ export default function WaterFall() {
   const [items, setItems] = useState<typeof data>([])
   // 容器
   const containerRef = useRef<HTMLDivElement | null>(null)
-
-  const threshold = 50 // 距离底部的阈值
+  // 距离底部的阈值
+  const threshold = 50
   // 列数
   const columns = 3
   // 间距
@@ -26,7 +26,6 @@ export default function WaterFall() {
     const columnHeights = new Array(columns).fill(0)
     // 获取要排列的元素数组
     const itemsElements = Array.from(container.children) as HTMLElement[]
-    console.log(itemsElements.length, 'length')
     // 遍历元素数组
     itemsElements.forEach((item, index) => {
       //取余获取item在哪一列
@@ -109,6 +108,26 @@ export default function WaterFall() {
       window.removeEventListener('scroll', debouncedHandleScroll)
     }
   }, [])
+
+  // 虚拟列表
+  useEffect(() => {
+    const getVisibleItems = () => {
+      const container = containerRef.current
+      if (!container) return
+    }
+
+    const calculateVisibleItems = debounce(getVisibleItems, 100)
+
+    calculateVisibleItems()
+
+    window.addEventListener('scroll', calculateVisibleItems)
+    window.addEventListener('resize', calculateVisibleItems)
+
+    return () => {
+      window.removeEventListener('scroll', calculateVisibleItems)
+      window.removeEventListener('resize', calculateVisibleItems)
+    }
+  }, [items])
 
   return (
     <div ref={containerRef} className="relative w-[770px] overflow-scroll">
