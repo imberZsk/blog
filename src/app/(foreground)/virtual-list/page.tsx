@@ -33,7 +33,7 @@ const VirtualList = () => {
     }
     // @ts-ignore
     setVisibleItems(items)
-  }, [scrollTop])
+  }, [scrollTop, visibleItemCount])
 
   return (
     <div style={{ height: totalItems * itemHeight }}>

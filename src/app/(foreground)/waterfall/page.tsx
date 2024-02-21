@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useState, useEffect } from 'react'
+import { useRef, useState, useEffect, useCallback } from 'react'
 import { data } from './constant'
 import Image from 'next/image'
 import debounce from 'lodash.debounce'
@@ -13,7 +13,7 @@ export default function WaterFall() {
   // 距离底部的阈值
   const threshold = 50
   // 列数
-  const columns = 3
+  // const columns = 3
   // 间距
   const gap = 10
 
@@ -22,16 +22,19 @@ export default function WaterFall() {
     // 获取容器
     const container = containerRef.current
     if (!container) return
+
+    const w = Math.floor(container.offsetWidth / 250)
     // 每列的高度数组
-    const columnHeights = new Array(columns).fill(0)
+    const columnHeights = new Array(w).fill(0)
     // 获取要排列的元素数组
     const itemsElements = Array.from(container.children) as HTMLElement[]
     // 遍历元素数组
-    itemsElements.forEach((item, index) => {
+    itemsElements.forEach(item => {
       //取余获取item在哪一列
-      const columnIndex = index % columns
+      const minValue = Math.min(...columnHeights) || 0
+      const columnIndex = columnHeights.indexOf(minValue)
       //从高度数组中获取当前列的高度
-      const columnHeight = columnHeights[columnIndex]
+      const columnHeight = columnHeights[columnIndex] // 0
       // 计算每个元素的位置
       const left = columnIndex * (item.offsetWidth + gap)
       const top = columnHeight
@@ -61,7 +64,6 @@ export default function WaterFall() {
     const init = async () => {
       const res: any = await fetchData()
       setItems(res)
-      // window.onload = calculatePositions()
     }
     init()
 
@@ -80,13 +82,13 @@ export default function WaterFall() {
   }, [])
 
   // 加载更多事件
-  const handleScroll = () => {
+  const handleScroll = useCallback(() => {
     // 判断是否滚动到底部，然后加载更多数据
-    const windowHeight = window.innerHeight
-    const documentHeight = document.documentElement.scrollHeight
+    const windowHeight = window.innerHeight // 可视区高度
+    const documentHeight = document.documentElement.scrollHeight // 总的页面高度
     const scrollPosition = window.scrollY
 
-    if (documentHeight - (scrollPosition + windowHeight) < threshold) {
+    if (documentHeight - (scrollPosition + windowHeight) <= threshold) {
       // 模拟异步加载更多数据
       const fetchMoreData = async () => {
         // 模拟从服务器获取更多数据
@@ -96,7 +98,7 @@ export default function WaterFall() {
 
       fetchMoreData()
     }
-  }
+  }, [])
 
   // 监听滚动事件
   useEffect(() => {
@@ -107,30 +109,30 @@ export default function WaterFall() {
     return () => {
       window.removeEventListener('scroll', debouncedHandleScroll)
     }
-  }, [])
+  }, [handleScroll])
 
   // 虚拟列表
-  useEffect(() => {
-    const getVisibleItems = () => {
-      const container = containerRef.current
-      if (!container) return
-    }
+  // useEffect(() => {
+  //   const getVisibleItems = () => {
+  //     const container = containerRef.current
+  //     if (!container) return
+  //   }
 
-    const calculateVisibleItems = debounce(getVisibleItems, 100)
+  //   const calculateVisibleItems = debounce(getVisibleItems, 100)
 
-    calculateVisibleItems()
+  //   calculateVisibleItems()
 
-    window.addEventListener('scroll', calculateVisibleItems)
-    window.addEventListener('resize', calculateVisibleItems)
+  //   window.addEventListener('scroll', calculateVisibleItems)
+  //   window.addEventListener('resize', calculateVisibleItems)
 
-    return () => {
-      window.removeEventListener('scroll', calculateVisibleItems)
-      window.removeEventListener('resize', calculateVisibleItems)
-    }
-  }, [items])
+  //   return () => {
+  //     window.removeEventListener('scroll', calculateVisibleItems)
+  //     window.removeEventListener('resize', calculateVisibleItems)
+  //   }
+  // }, [items])
 
   return (
-    <div ref={containerRef} className="relative w-[770px] overflow-scroll">
+    <div ref={containerRef} className="relative mx-auto w-[80%] overflow-scroll">
       {items.map((item, index) => {
         const { url_default, width, height } = item.note_card.cover
         const { display_title } = item.note_card
@@ -144,9 +146,11 @@ export default function WaterFall() {
           >
             <Image
               src={url_default}
-              className="h-auto w-full object-cover"
+              className="h-auto max-h-[340px] w-full object-cover"
               width={width}
               height={height}
+              loading="eager"
+              priority
               alt=""
               onLoad={calculatePositions}
             />
