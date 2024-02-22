@@ -139,6 +139,7 @@ export default function WaterFall() {
         return (
           <div
             key={index}
+            className="transition-transform !duration-[500ms]"
             style={{
               width: '250px',
               marginBottom: '10px' // 行之间的间距
@@ -149,8 +150,15 @@ export default function WaterFall() {
               className="h-auto max-h-[340px] w-full object-cover"
               width={width}
               height={height}
-              loading="eager"
-              priority
+              // 图片缓存问题可能会导致
+              // loading="eager"
+              // 图片其实会一开始就加载，加载了去计算位置，所以不用loading=lazy,反正都是直接出现在页面
+              // priority
+              // placeholder="blur"
+              // blurDataURL={
+              //   'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII='
+              // }
+              // blurDataURL={url_pre}
               alt=""
               onLoad={calculatePositions}
             />
