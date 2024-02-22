@@ -8,6 +8,12 @@ const nextConfig = {
         hostname: 'sns-webpic-qc.xhscdn.com',
         port: '',
         pathname: '/**'
+      },
+      {
+        protocol: 'https',
+        hostname: 'ssm.res.meizu.com',
+        port: '',
+        pathname: '/**'
       }
     ]
   }
