@@ -1,47 +1,50 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 
 const VirtualList = () => {
-  const [visibleItems, setVisibleItems] = useState([])
-  const [scrollTop, setScrollTop] = useState(0)
-
-  const totalItems = 10000 // 总数据项数量
-  const itemHeight = 50 // 每个数据项的高度
-  const visibleItemCount = Math.ceil(window.innerHeight / itemHeight) // 可见区域内的数据项数量
-  const bufferSize = 5 // 缓冲区大小
+  const [startIndex, setStartIndex] = useState(0)
+  const [endIndex, setEndIndex] = useState(9)
+  const containerRef = useRef<HTMLDivElement | null>(null)
 
   useEffect(() => {
+    const container = containerRef.current
+
+    if (!container) return
+
     const handleScroll = () => {
-      setScrollTop(window.scrollY)
+      const scrollTop = container.scrollTop
+      const clientHeight = container.clientHeight
+      const visibleItems = Math.ceil(clientHeight / 60) // 每个列表项高度为 60px
+      const totalItems = 100 // 列表项总数
+
+      const newStartIndex = Math.floor(scrollTop / 60)
+      const newEndIndex = Math.min(newStartIndex + visibleItems - 1, totalItems - 1)
+
+      setStartIndex(newStartIndex)
+      setEndIndex(newEndIndex)
     }
 
-    window.addEventListener('scroll', handleScroll)
+    container.addEventListener('scroll', handleScroll)
     return () => {
-      window.removeEventListener('scroll', handleScroll)
+      container.removeEventListener('scroll', handleScroll)
     }
   }, [])
 
-  useEffect(() => {
-    const startIndex = Math.floor(scrollTop / itemHeight)
-    const endIndex = startIndex + visibleItemCount + bufferSize
-
-    // 生成可见的数据项
-    const items = []
-    for (let i = startIndex; i < endIndex; i++) {
-      items.push(<div key={i} style={{ height: itemHeight }}>{`Item ${i}`}</div>)
-    }
-    // @ts-ignore
-    setVisibleItems(items)
-  }, [scrollTop, visibleItemCount])
-
   return (
-    <div style={{ height: totalItems * itemHeight }}>
-      <div style={{ position: 'sticky', top: 0 }}>
-        {/* 占位元素，确保滚动后页面不会抖动 */}
-        <div style={{ height: totalItems * itemHeight }}></div>
-      </div>
-      {visibleItems}
+    <div ref={containerRef} className="mx-auto mt-[200px] h-[600px] w-[800px] overflow-hidden overflow-y-auto">
+      <div style={{ height: `${startIndex * 60}px` }}></div>
+      {Array(endIndex - startIndex + 1)
+        .fill(0)
+        .map((_, index) => {
+          const itemIndex = startIndex + index
+          return (
+            <div key={itemIndex} className="mb-[20px] h-[60px] w-[800px] bg-[#ccc] text-center text-[30px] text-black">
+              {itemIndex}
+            </div>
+          )
+        })}
+      <div style={{ height: `${(100 - endIndex - 1) * 60}px` }}></div>
     </div>
   )
 }

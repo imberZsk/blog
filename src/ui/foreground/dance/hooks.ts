@@ -4,10 +4,14 @@ import { useEffect, useRef, useState } from 'react'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader'
+import { useTheme } from 'next-themes'
 
 export const useLoadModal = () => {
   const containerRef = useRef<HTMLDivElement>(null) // 添加一个 ref
   const [loading, setLoading] = useState(true)
+
+  const { theme } = useTheme()
+
   useEffect(() => {
     let camera: THREE.PerspectiveCamera | null = null
     let scene: THREE.Scene | null = null
@@ -26,8 +30,9 @@ export const useLoadModal = () => {
 
       // #region 2、场景
       scene = new THREE.Scene()
-      scene.background = new THREE.Color(0xa0a0a0)
-      scene.fog = new THREE.Fog(0xa0a0a0, 200, 1000)
+      // scene.background = new THREE.Color(theme === 'dark' ? 0x000000 : 0xa0a0a0) // 设置背景颜色为黑色
+      // scene.fog = new THREE.Fog(theme === 'dark' ? 0x000000 : 0xa0a0a0, 200, 1000) // 设置雾效颜色为黑色
+      updateSceneColors() // 更新场景的背景颜色和雾效颜色
       // #endregion
 
       // #region 3、灯光
@@ -112,6 +117,14 @@ export const useLoadModal = () => {
       // #endregion
     }
 
+    const updateSceneColors = (): void => {
+      const backgroundColor = theme === 'dark' ? 0x000000 : 0xa0a0a0
+      const fogColor = theme === 'dark' ? 0x000000 : 0xa0a0a0
+
+      scene.background = new THREE.Color(backgroundColor)
+      scene.fog = new THREE.Fog(fogColor, 200, 1000)
+    }
+
     function onWindowResize() {
       if (camera && renderer) {
         camera.aspect = window.innerWidth / window.innerHeight
@@ -141,7 +154,7 @@ export const useLoadModal = () => {
     }
 
     init()
-  }, [])
+  }, [theme])
 
   return {
     containerRef,
