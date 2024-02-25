@@ -1,0 +1,29 @@
+{
+  "tabs": [
+    {
+      "name": "VirtualList",
+      "href": "/en/virtual-list"
+    },
+    {
+      "name": "WaterFall",
+      "href": "/en/waterfall"
+    },
+    {
+      "name": "Docs",
+      "href": "https://imber-docs.netlify.app",
+      "target": "_blank"
+    },
+    {
+      "name": "Blog",
+      "href": "/en/blog"
+    },
+    {
+      "name": "Creation",
+      "href": "/en/editor"
+    },
+    {
+      "name": "Download",
+      "href": "/en/download"
+    }
+  ]
+}

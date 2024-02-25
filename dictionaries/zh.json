@@ -1,0 +1,29 @@
+{
+  "tabs": [
+    {
+      "name": "虚拟列表",
+      "href": "/zh/virtual-list"
+    },
+    {
+      "name": "瀑布流",
+      "href": "/zh/waterfall"
+    },
+    {
+      "name": "文档",
+      "href": "https://imber-docs.netlify.app",
+      "target": "_blank"
+    },
+    {
+      "name": "博客",
+      "href": "/zh/blog"
+    },
+    {
+      "name": "创作",
+      "href": "/zh/editor"
+    },
+    {
+      "name": "下载",
+      "href": "/zh/download"
+    }
+  ]
+}
