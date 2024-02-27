@@ -131,38 +131,62 @@ export default function WaterFall() {
   //   }
   // }, [items])
 
+  // 让图片隐藏的数组，做渐进显示
+  const [loadedImages, setLoadedImages] = useState<number[]>([])
+
+  // 设置隐藏小图片
+  const handleImageLoad = (index: number) => {
+    setLoadedImages(prevLoadedImages => [...prevLoadedImages, index])
+  }
+
   return (
     <div ref={containerRef} className="relative mx-auto w-[80%] overflow-scroll">
       {items.map((item, index) => {
-        const { url_default, width, height } = item.note_card.cover
+        const { url_pre, url_default, width, height } = item.note_card.cover
         const { display_title } = item.note_card
+
+        // 是否隐藏小图片，做渐进显示
+        const isImageLoaded = loadedImages.includes(index)
+        // 动态计算高度
+        const realHeight = (height * 250) / width
+
         return (
-          <div
-            key={index}
-            className="transition-transform !duration-[500ms]"
-            style={{
-              width: '250px',
-              marginBottom: '10px' // 行之间的间距
-            }}
-          >
-            <Image
-              src={url_default}
-              className="h-auto max-h-[340px] w-full object-cover"
-              width={width}
-              height={height}
-              // 图片缓存问题可能会导致
-              // loading="eager"
-              // 图片其实会一开始就加载，加载了去计算位置，所以不用loading=lazy,反正都是直接出现在页面
-              // priority
-              // placeholder="blur"
-              // blurDataURL={
-              //   'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII='
-              // }
-              // blurDataURL={url_pre}
-              alt=""
-              onLoad={calculatePositions}
-            />
-            <div>{display_title}</div>
+          <div key={index} className=" mb-[10px] h-fit w-[250px]">
+            <div
+              className="relative w-[250px] overflow-hidden"
+              style={{
+                height: `${realHeight}px`
+              }}
+            >
+              {!isImageLoaded && (
+                <Image
+                  src={url_pre}
+                  className="absolute h-full w-full object-cover blur-[20px] filter"
+                  style={{
+                    filter: 'blur(5px)'
+                  }}
+                  width={width}
+                  height={height}
+                  alt=""
+                ></Image>
+              )}
+
+              <Image
+                src={url_default}
+                className="h-full w-full object-cover transition-all"
+                width={width}
+                height={height}
+                alt=""
+                onLoad={() => {
+                  calculatePositions()
+                  // 如果真实图片加载完成，则加进数组，让之前到图片隐藏
+                  setTimeout(() => {
+                    handleImageLoad(index)
+                  }, 1000)
+                }}
+              />
+            </div>
+            <p>{display_title}</p>
           </div>
         )
       })}
