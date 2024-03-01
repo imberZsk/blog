@@ -79,7 +79,50 @@ const EditorEdit = () => {
     setIsShowMention(true)
   }
 
+  const [stream, setStream] = useState('666')
+
   if (!editor) return null
+
+  //
+  const handleAI1 = () => {
+    // fetch(`/api/ai/document`).then(res => {
+    //   console.log(res)
+    // })
+    // const eventSource = new EventSource('/api/ai/document')
+
+    // eventSource.onmessage = function (event) {
+    //   const data = JSON.parse(event.data)
+    //   console.log(data)
+    //   // 在这里处理接收到的数据
+    // }
+    const url = '/api/ai/document' // 将 "/api/your-endpoint" 替换为你的 API 路由路径
+
+    fetch(url)
+      .then(response => {
+        const reader = response.body.getReader()
+
+        function read() {
+          return reader.read().then(({ done, value }) => {
+            if (done) {
+              console.log('Stream complete')
+              return
+            }
+
+            const chunk = new TextDecoder().decode(value)
+            console.log('Received chunk:', chunk)
+            setStream(stream => (stream += chunk))
+            // 在这里处理接收到的数据
+
+            return read() // 继续读取下一个数据块
+          })
+        }
+
+        return read()
+      })
+      .catch(error => {
+        console.error('Error receiving stream:', error)
+      })
+  }
 
   return (
     <div className="mx-auto mt-[80px] w-[1200px]">
@@ -162,6 +205,14 @@ const EditorEdit = () => {
           投票（新Nodes）
         </button>
       </div>
+
+      <div className="cursor-pointer" onClick={handleAI1}>
+        AI-根据关键词生成朋友圈文案（轻帖）
+      </div>
+      <div>AI-根据关键词生成小红书文案（轻帖）</div>
+      <div>AI-扩写助手</div>
+      <div>AI-润色</div>
+      <div>{stream}</div>
 
       <div className="mx-auto w-[708px]">
         {/* <input
