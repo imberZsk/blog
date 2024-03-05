@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      #container {
+        border: 1px solid red;
+        height: 300px;
+        overflow: scroll;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="container">
+      <div id="list"></div>
+    </div>
+  </body>
+  <script type="module">
+    // import { fetchData, render, isScrollToBottom } from './js/utils.js'
+    const MAX_LENGTH = Infinity // 最大消息个数
+    const MSG_TYPE_COUNT = 4 // 消息类型个数
+
+    function isScrollToBottom(outerElement, bottom = 10) {
+      if (outerElement.scrollTop + outerElement.clientHeight + bottom >= outerElement.scrollHeight) {
+        return true
+      } else {
+        return false
+      }
+    }
+
+    function fetchData(page, size) {
+      return new Promise((resolve, reject) => {
+        if (page * size >= MAX_LENGTH) {
+          console.log('无法加载更多数据了')
+          reject()
+        } else {
+          console.log('加载数据中...')
+          setTimeout(() => {
+            const ret = []
+            for (let i = 0; i < size; i++) {
+              ret.push(createMsg(page * size + i))
+            }
+            resolve(ret)
+            console.log('数据加载完成', page, size, ret)
+          }, Math.random() * 500) // 随机0～500ms
+        }
+      })
+    }
+    function render(element, list) {
+      const fragment = document.createDocumentFragment()
+      for (let i = 0; i < list.length; i++) {
+        const node = document.createElement('div')
+        const height = getMsgHeight(list[i].type)
+        node.style.height = height + 'px'
+        node.style.border = `1px solid green`
+        node.id = list[i].id
+        node.innerText = list[i].value
+        fragment.appendChild(node)
+      }
+      element.appendChild(fragment)
+    }
+
+    /**
+     * 生成一条消息对象
+     * @param {*} value
+     * @returns 类型：{id: string, value: any, type: number}
+     */
+    function createMsg(value) {
+      return {
+        id: `p2p_${Date.now()}_${Math.floor(Math.random() * 1000)}_${Math.floor(Math.random() * 100000000000)}`,
+        value,
+        type: Math.floor(Math.random() * MSG_TYPE_COUNT)
+      }
+    }
+
+    /**
+     * 自定义消息类型高度
+     * @param {*} type
+     * @returns 高度值（px）
+     */
+    function getMsgHeight(type) {
+      let ret = 0
+      switch (type) {
+        case 0: // 文字
+          ret = 50
+          break
+        case 1: // 图片
+          ret = 150
+          break
+        case 2: // 视频
+          ret = 48
+          break
+        case 3: // 音频
+          ret = 80
+          break
+        default: // 其他
+          ret = 43
+          break
+      }
+      return ret
+    }
+
+    let page = 0 // 初始页数
+    let size = 10 // 每页消息数量
+    let loadedList = [] // 已加载的数据列表
+    let loadedListMap = new Map() // 缓存每个消息的高度信息
+    let isLoading = false // 是否在加载中
+    let totalLoadedHeight = 0 // loadedList所有消息如果渲染到屏幕上的总高度
+
+    const outerElement = document.getElementById('container') // 外层父容器元素
+    const innerElement = document.getElementById('list') // 列表容器元素
+    const containerHeight = outerElement.clientHeight // 外层父容器高度
+
+    // 初始加载数据
+    loadData()
+
+    // 监听外层父容器滚动事件
+    outerElement.addEventListener('scroll', e => {
+      if (isLoading) return
+      if (isScrollToBottom(outerElement, 100)) {
+        loadData()
+      }
+      scrollHandler(e.target.scrollTop)
+    })
+
+    // 封装加载数据
+    function loadData() {
+      isLoading = true
+      fetchData(page, size)
+        .then(res => {
+          page++
+          loadedList = loadedList.concat(res)
+          render(innerElement, res)
+          cacheNodeHeight(res)
+        })
+        .finally(() => {
+          isLoading = false
+        })
+    }
+
+    // 缓存每个消息节点的高度到Map中
+    function cacheNodeHeight(list) {
+      list.forEach(item => {
+        if (!loadedListMap.has(item.id)) {
+          // 从页面上获取对应ID的DOM节点的高度
+          const height = document.getElementById(item.id).clientHeight
+          loadedListMap.set(item.id, height)
+          totalLoadedHeight += height
+        }
+      })
+    }
+
+    // 滑动事件处理
+    function scrollHandler(scrollTop) {
+      scrollTop = scrollTop < 0 ? 0 : scrollTop
+
+      let accumulateHeight = 0 // 累计垂直偏移高度
+      let startIndex = null // 显示在container中的起始下表
+      let endIndex = null // 显示在container中的结束下标
+      let paddingTop = 0 // 顶部留白高度
+      let paddingBottom = 0 // 底部留白高度
+
+      // 计算startIndex和paddingTop
+      for (let i = 0; i < loadedList.length; i++) {
+        const height = loadedListMap.get(loadedList[i].id)
+        accumulateHeight += height
+        if (accumulateHeight > scrollTop) {
+          startIndex = i
+          paddingTop = accumulateHeight - height
+          break
+        }
+      }
+
+      // 计算endIndex和paddingBottom
+      for (let i = startIndex + 1; i < loadedList.length; i++) {
+        const height = loadedListMap.get(loadedList[i].id)
+        accumulateHeight += height
+        if (accumulateHeight >= scrollTop + containerHeight) {
+          endIndex = i
+          break
+        }
+      }
+
+      // 边界情况处理
+      if (endIndex === null) {
+        endIndex = loadedList.length - 1
+        accumulateHeight = totalLoadedHeight
+      }
+
+      paddingBottom = totalLoadedHeight - accumulateHeight
+      console.log(
+        startIndex,
+        endIndex,
+        paddingTop,
+        paddingBottom,
+        scrollTop,
+        containerHeight,
+        totalLoadedHeight,
+        loadedList
+      )
+
+      // 设置paddingTop和paddingBottom
+      innerElement.setAttribute('style', 'padding-top: ' + paddingTop + 'px; padding-bottom: ' + paddingBottom + 'px;')
+      innerElement.innerHTML = ''
+      render(innerElement, loadedList.slice(startIndex, endIndex + 1))
+    }
+  </script>
+</html>
