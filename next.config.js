@@ -4,8 +4,8 @@ const nextConfig = {
   async rewrites() {
     return [
       {
-        source: '/api/:path*',
-        destination: 'https://xxx.com/:path*' // 配置代理地址为 https://myplus-api.meizu.cn
+        source: '/api-myplus/:path*',
+        destination: `https://myplus-api.meizu.cn/:path*`
       }
     ]
   },

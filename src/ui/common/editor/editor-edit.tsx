@@ -1,10 +1,8 @@
-/* eslint-disable no-unused-vars */
-// @ts-nocheck
-
 'use client'
 
-import { useState } from 'react'
-import { defaultExtensions } from './extensions'
+import { fetchEventSource } from '@microsoft/fetch-event-source'
+import { useState, useRef } from 'react'
+import { defaultExtensions } from './custom/extension-default'
 import { useEditor, EditorContent } from '@tiptap/react'
 import {
   Modal,
@@ -16,8 +14,19 @@ import {
   useDisclosure,
   Input
 } from '@nextui-org/react'
+import CryptoJS from 'crypto-js'
+import Typed from 'typed.js'
 
 const EditorEdit = () => {
+  const el1 = useRef(null)
+  const el2 = useRef(null)
+  const el3 = useRef(null)
+  const el4 = useRef(null)
+  const typed = useRef<Typed | null>(null)
+
+  const [aiData, setAiData] = useState('')
+
+  // eslint-disable-next-line no-unused-vars
   const [data, setData] = useState({
     userId: 2,
     title: '',
@@ -79,54 +88,141 @@ const EditorEdit = () => {
     setIsShowMention(true)
   }
 
-  const [stream, setStream] = useState('666')
-
   if (!editor) return null
 
-  //
-  const handleAI1 = () => {
-    // fetch(`/api/ai/document`).then(res => {
-    //   console.log(res)
-    // })
-    // const eventSource = new EventSource('/api/ai/document')
-
-    // eventSource.onmessage = function (event) {
-    //   const data = JSON.parse(event.data)
-    //   console.log(data)
-    //   // 在这里处理接收到的数据
+  const handleAI1 = async () => {
+    // const eventSource = new EventSource('http://localhost:3000/stream')
+    // eventSource.onmessage = ({ data }) => {
+    //   console.log('New message', JSON.parse(data))
     // }
-    const url = '/api/ai/document' // 将 "/api/your-endpoint" 替换为你的 API 路由路径
+    const url = `/api-myplus/myplus-qing/ug/ai/gc/document/friend?text=${encodeURIComponent('魅族')}`
+    let tar = ''
+    await fetchEventSource(url, {
+      method: 'POST',
+      onmessage(ev) {
+        const encodedData = ev.data // Base64 编码的字符串
+        // 解密 Base64 数据
+        const decodedData = CryptoJS.enc.Base64.parse(encodedData).toString(CryptoJS.enc.Utf8)
+        // setStr(str => (str += decodedData))
+        tar += decodedData
+      }
+    })
+    if (typed.current) {
+      typed.current?.destroy()
+    }
+    typed.current = new Typed(el1.current, {
+      strings: [tar],
+      typeSpeed: 50
+    })
+    setAiData(tar)
+    typed.current.start()
+  }
 
-    fetch(url)
-      .then(response => {
-        const reader = response.body.getReader()
+  const handleAI2 = async () => {
+    const url = `/api-myplus/myplus-qing/ug/ai/gc/document/red?text=${encodeURIComponent('魅族手机')}`
+    let tar = ''
+    await fetchEventSource(url, {
+      method: 'POST',
+      onmessage(ev) {
+        const encodedData = ev.data // Base64 编码的字符串
+        // 解密 Base64 数据
+        const decodedData = CryptoJS.enc.Base64.parse(encodedData).toString(CryptoJS.enc.Utf8)
+        // setStr(str => (str += decodedData))
+        tar += decodedData
+      }
+    })
+    if (typed.current) {
+      typed.current?.destroy()
+    }
+    typed.current = new Typed(el2.current, {
+      strings: [tar],
+      typeSpeed: 50
+    })
+    setAiData(tar)
+    typed.current.start()
+  }
 
-        function read() {
-          return reader.read().then(({ done, value }) => {
-            if (done) {
-              console.log('Stream complete')
-              return
-            }
+  const handleAI3 = async () => {
+    const url = `/api-myplus/myplus-qing/ug/ai/gc/expand?text=${encodeURIComponent('今天天气真好')}`
+    let tar = ''
+    await fetchEventSource(url, {
+      method: 'POST',
+      onmessage(ev) {
+        const encodedData = ev.data // Base64 编码的字符串
+        // 解密 Base64 数据
+        const decodedData = CryptoJS.enc.Base64.parse(encodedData).toString(CryptoJS.enc.Utf8)
+        // setStr(str => (str += decodedData))
+        tar += decodedData
+      }
+    })
+    if (typed.current) {
+      typed.current?.destroy()
+    }
+    typed.current = new Typed(el3.current, {
+      strings: [tar],
+      typeSpeed: 50
+    })
+    setAiData(tar)
+    typed.current.start()
+  }
 
-            const chunk = new TextDecoder().decode(value)
-            console.log('Received chunk:', chunk)
-            setStream(stream => (stream += chunk))
-            // 在这里处理接收到的数据
+  const handleAI4 = async () => {
+    const url = `/api-myplus/myplus-qing/ug/ai/gc/polish?text=${encodeURIComponent('今天天气真好')}`
+    let tar = ''
+    await fetchEventSource(url, {
+      method: 'POST',
+      onmessage(ev) {
+        const encodedData = ev.data // Base64 编码的字符串
+        // 解密 Base64 数据
+        const decodedData = CryptoJS.enc.Base64.parse(encodedData).toString(CryptoJS.enc.Utf8)
+        // setStr(str => (str += decodedData))
+        tar += decodedData
+      }
+    })
+    if (typed.current) {
+      typed.current?.destroy()
+    }
+    typed.current = new Typed(el4.current, {
+      strings: [tar],
+      typeSpeed: 50
+    })
+    setAiData(tar)
+    typed.current.start()
+  }
 
-            return read() // 继续读取下一个数据块
-          })
-        }
-
-        return read()
-      })
-      .catch(error => {
-        console.error('Error receiving stream:', error)
-      })
+  const handleShopCard = () => {
+    editor.commands.setCard({ title: 'title', subTitle: 'subTitle', price: '价格', img: '图片' })
   }
 
   return (
     <div className="mx-auto mt-[80px] w-[1200px]">
       <h1 className="mb-[40px] text-center text-[60px]">编辑器开发中</h1>
+
+      <div className="type-wrap w-full">
+        <span style={{ whiteSpace: 'wrap' }} ref={el1}></span>
+      </div>
+
+      <div className="type-wrap w-full">
+        <span style={{ whiteSpace: 'wrap' }} ref={el2}></span>
+      </div>
+
+      <div className="type-wrap w-full">
+        <span style={{ whiteSpace: 'wrap' }} ref={el3}></span>
+      </div>
+
+      <div className="type-wrap w-full">
+        <span style={{ whiteSpace: 'wrap' }} ref={el4}></span>
+      </div>
+
+      <div
+        onClick={() => {
+          console.log(aiData, 'aidata')
+          editor.commands.insertContent(aiData)
+        }}
+        className="cursor-pointer"
+      >
+        复制文案到编辑器中
+      </div>
 
       <div className="mb-[80px] flex gap-2">
         <button
@@ -202,17 +298,20 @@ const EditorEdit = () => {
 
       <div className="mb-[80px] flex gap-2">
         <button onClick={onOpen} className="outline-none">
-          投票（新Nodes）
+          投票(新Nodes - vote)
+        </button>
+        <button onClick={handleShopCard} className="outline-none">
+          商品卡片(新Nodes - shopCard)
         </button>
       </div>
 
       <div className="cursor-pointer" onClick={handleAI1}>
         AI-根据关键词生成朋友圈文案（轻帖）
       </div>
-      <div>AI-根据关键词生成小红书文案（轻帖）</div>
-      <div>AI-扩写助手</div>
-      <div>AI-润色</div>
-      <div>{stream}</div>
+
+      <div onClick={handleAI2}>AI-根据关键词生成小红书文案（轻帖）</div>
+      <div onClick={handleAI3}>AI-扩写助手</div>
+      <div onClick={handleAI4}>AI-润色</div>
 
       <div className="mx-auto w-[708px]">
         {/* <input

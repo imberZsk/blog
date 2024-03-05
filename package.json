@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@formatjs/intl-localematcher": "^0.5.4",
+    "@microsoft/fetch-event-source": "^2.0.1",
     "@nextui-org/react": "^2.2.9",
     "@nextui-org/system": "^2.0.15",
     "@nextui-org/theme": "^2.1.17",
@@ -21,6 +22,7 @@
     "@tiptap/extension-underline": "^2.1.13",
     "@tiptap/react": "^2.1.13",
     "@tiptap/starter-kit": "^2.1.13",
+    "crypto-js": "^4.2.0",
     "framer-motion": "^10.16.16",
     "lodash.debounce": "^4.0.8",
     "negotiator": "^0.6.3",
@@ -30,11 +32,13 @@
     "react": "^18",
     "react-dom": "^18",
     "state": "link:@tiptap/pm/state",
-    "three": "^0.160.0"
+    "three": "^0.160.0",
+    "typed.js": "^2.1.0"
   },
   "devDependencies": {
     "@commitlint/cli": "^18.4.3",
     "@commitlint/config-conventional": "^18.4.3",
+    "@types/crypto-js": "^4.2.2",
     "@types/lodash.debounce": "^4.0.9",
     "@types/negotiator": "^0.6.3",
     "@types/node": "^20",

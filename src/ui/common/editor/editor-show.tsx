@@ -1,6 +1,6 @@
 'use client'
 import { useEditor, EditorContent } from '@tiptap/react'
-import { defaultExtensions } from './extensions'
+import { defaultExtensions } from './custom/extension-default'
 
 const Editor = ({ editable = true, content = '来编写你的文章吧～' }: { editable?: boolean; content?: string }) => {
   const editor = useEditor({

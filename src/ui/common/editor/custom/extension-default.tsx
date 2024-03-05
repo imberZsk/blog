@@ -2,7 +2,8 @@ import StarterKit from '@tiptap/starter-kit'
 import TiptapUnderline from '@tiptap/extension-underline'
 // import HorizontalRule from './horizontalRule'
 import Image from '@tiptap/extension-image'
-import Vote from './custom/extension-vote'
+import Vote from './extension-vote'
+import Card from './extension-card'
 // import FileHandler from '@tiptap-pro/extension-file-handler'
 
 export const defaultExtensions = [
@@ -31,6 +32,11 @@ export const defaultExtensions = [
   Vote.configure({
     HTMLAttributes: {
       class: 'p-[20px] bg-[#ccc] rounded-[8px] w-full bg-[#ccc] my-[10px]'
+    }
+  }),
+  Card.configure({
+    HTMLAttributes: {
+      class: 'w-[708px] h-[160px] border border-[#ff4132]'
     }
   })
   // FileHandler.configure({
