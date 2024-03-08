@@ -36,7 +36,7 @@ export const defaultExtensions = [
   }),
   Card.configure({
     HTMLAttributes: {
-      class: 'w-[708px] h-[160px] border border-[#ff4132]'
+      class: 'w-[708px] h-[40px] border border-[#ff4132]'
     }
   })
   // FileHandler.configure({

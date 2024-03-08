@@ -24,6 +24,113 @@ const EditorEdit = () => {
   const el4 = useRef(null)
   const typed = useRef<Typed | null>(null)
 
+  // 拍平数组
+  // useEffect(() => {
+  //   const a = [
+  //     [1, 2],
+  //     [3, 4],
+  //     [2, 3, 4, [7, 4, 9]]
+  //   ]
+
+  //   const flat = arr => {
+  //     return arr.reduce((p, n) => {
+  //       return p.concat(Array.isArray(n) ? flat(n) : n)
+  //     }, [])
+  //   }
+
+  //   console.log(flat(a))
+  // }, [])
+
+  // 数组转树
+  // useEffect(() => {
+  //   // 测试数据
+  //   const arr = [
+  //     { id: '01', name: '张大大', pid: '', job: '项目经理' },
+  //     { id: '02', name: '小亮', pid: '01', job: '产品leader' },
+  //     { id: '03', name: '小美', pid: '01', job: 'UIleader' },
+  //     { id: '04', name: '老马', pid: '01', job: '技术leader' },
+  //     { id: '05', name: '老王', pid: '01', job: '测试leader' },
+  //     { id: '06', name: '老李', pid: '01', job: '运维leader' },
+  //     { id: '07', name: '小丽', pid: '02', job: '产品经理' },
+  //     { id: '08', name: '大光', pid: '02', job: '产品经理' },
+  //     { id: '09', name: '小高', pid: '03', job: 'UI设计师' },
+  //     { id: '10', name: '小刘', pid: '04', job: '前端工程师' },
+  //     { id: '11', name: '小华', pid: '04', job: '后端工程师' },
+  //     { id: '12', name: '小李', pid: '04', job: '后端工程师' },
+  //     { id: '13', name: '小赵', pid: '05', job: '测试工程师' },
+  //     { id: '14', name: '小强', pid: '05', job: '测试工程师' },
+  //     { id: '15', name: '小涛', pid: '06', job: '运维工程师' }
+  //   ]
+
+  //   function ArrToTree(arr, id = 0) {
+  //     const target = []
+  //     arr.forEach(item => {
+  //       if (item.pid == id) {
+  //         const children = ArrToTree(arr, item.id)
+  //         if (children.length > 0) {
+  //           item.children = children
+  //         }
+  //         target.push(item)
+  //       }
+  //     })
+  //     return target
+  //   }
+
+  //   console.log(ArrToTree(arr))
+  // }, [])
+
+  // 深拷贝
+  // useEffect(() => {
+  //   const obj = {
+  //     a: 1,
+  //     b: 2,
+  //     c: [132456]
+  //   }
+
+  //   const deepClone = (obj, cache = new WeakMap()) => {
+  //     if (typeof obj !== 'object' || obj === null) return obj
+
+  //     if (cache.has(obj)) {
+  //       return cache.get(obj)
+  //     }
+
+  //     const target = Array.isArray(obj) ? [] : {}
+
+  //     cache.set(obj, target)
+
+  //     for (let key in obj) {
+  //       if (obj.hasOwnProperty(key)) {
+  //         target[key] = deepClone(obj[key])
+  //       }
+  //     }
+  //     return target
+  //   }
+
+  //   console.log(deepClone(obj))
+  // }, [])
+
+  // 大数相加
+  // useEffect(() => {
+  //   var addStrings = function (num1, num2) {
+  //     let i = num1.length - 1,
+  //       j = num2.length - 1,
+  //       add = 0
+  //     const ans = []
+  //     while (i >= 0 || j >= 0 || add != 0) {
+  //       const x = i >= 0 ? num1.charAt(i) - '0' : 0
+  //       const y = j >= 0 ? num2.charAt(j) - '0' : 0
+  //       const result = x + y + add
+  //       ans.push(result % 10)
+  //       add = Math.floor(result / 10)
+  //       i -= 1
+  //       j -= 1
+  //     }
+  //     return ans.reverse().join('')
+  //   }
+
+  //   console.log(addStrings('123', '456'))
+  // }, [])
+
   const [aiData, setAiData] = useState('')
 
   // eslint-disable-next-line no-unused-vars
@@ -190,10 +297,6 @@ const EditorEdit = () => {
     typed.current.start()
   }
 
-  const handleShopCard = () => {
-    editor.commands.setCard({ title: 'title', subTitle: 'subTitle', price: '价格', img: '图片' })
-  }
-
   return (
     <div className="mx-auto mt-[80px] w-[1200px]">
       <h1 className="mb-[40px] text-center text-[60px]">编辑器开发中</h1>
@@ -300,8 +403,22 @@ const EditorEdit = () => {
         <button onClick={onOpen} className="outline-none">
           投票(新Nodes - vote)
         </button>
-        <button onClick={handleShopCard} className="outline-none">
-          商品卡片(新Nodes - shopCard)
+        <button
+          onClick={() =>
+            editor.chain().focus().setCard({ title: 'title', subTitle: 'subTitle', price: '价格', img: '图片' }).run()
+          }
+          className="outline-none"
+        >
+          商品卡片(新Nodes - card)
+        </button>
+
+        <button
+          onClick={() =>
+            editor.chain().focus().setCard({ title: 'title', subTitle: 'subTitle', price: '价格', img: '图片' }).run()
+          }
+          className="outline-none"
+        >
+          emoji(新Nodes - emoji)
         </button>
       </div>
 

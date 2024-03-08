@@ -26,6 +26,9 @@ dependencies:
   '@tiptap/core':
     specifier: ^2.1.13
     version: 2.1.13(@tiptap/pm@2.1.13)
+  '@tiptap/extension-bubble-menu':
+    specifier: ^2.2.4
+    version: 2.2.4(@tiptap/core@2.1.13)(@tiptap/pm@2.1.13)
   '@tiptap/extension-image':
     specifier: ^2.1.13
     version: 2.1.13(@tiptap/core@2.1.13)
@@ -2945,8 +2948,8 @@ packages:
       '@tiptap/core': 2.1.13(@tiptap/pm@2.1.13)
     dev: false
 
-  /@tiptap/extension-bubble-menu@2.1.13(@tiptap/core@2.1.13)(@tiptap/pm@2.1.13):
-    resolution: {integrity: sha512-Hm7e1GX3AI6lfaUmr6WqsS9MMyXIzCkhh+VQi6K8jj4Q4s8kY4KPoAyD/c3v9pZ/dieUtm2TfqrOCkbHzsJQBg==}
+  /@tiptap/extension-bubble-menu@2.2.4(@tiptap/core@2.1.13)(@tiptap/pm@2.1.13):
+    resolution: {integrity: sha512-Nx1fS9jcFlhxaTDYlnayz2UulhK6CMaePc36+7PQIVI+u20RhgTCRNr25zKNemvsiM0RPZZVUjlHkxC0l5as1Q==}
     peerDependencies:
       '@tiptap/core': ^2.0.0
       '@tiptap/pm': ^2.0.0
@@ -3153,7 +3156,7 @@ packages:
       react-dom: ^17.0.0 || ^18.0.0
     dependencies:
       '@tiptap/core': 2.1.13(@tiptap/pm@2.1.13)
-      '@tiptap/extension-bubble-menu': 2.1.13(@tiptap/core@2.1.13)(@tiptap/pm@2.1.13)
+      '@tiptap/extension-bubble-menu': 2.2.4(@tiptap/core@2.1.13)(@tiptap/pm@2.1.13)
       '@tiptap/extension-floating-menu': 2.1.13(@tiptap/core@2.1.13)(@tiptap/pm@2.1.13)
       '@tiptap/pm': 2.1.13
       react: 18.2.0
