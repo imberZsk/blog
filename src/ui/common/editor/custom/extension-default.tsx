@@ -1,10 +1,9 @@
 import StarterKit from '@tiptap/starter-kit'
 import TiptapUnderline from '@tiptap/extension-underline'
-// import HorizontalRule from './horizontalRule'
 import Image from '@tiptap/extension-image'
+import BubbleMenu from '@tiptap/extension-bubble-menu'
 import Vote from './extension-vote'
 import Card from './extension-card'
-// import FileHandler from '@tiptap-pro/extension-file-handler'
 
 export const defaultExtensions = [
   StarterKit.configure({
@@ -38,6 +37,9 @@ export const defaultExtensions = [
     HTMLAttributes: {
       class: 'w-[708px] h-[40px] border border-[#ff4132]'
     }
+  }),
+  BubbleMenu.configure({
+    // element: document.querySelector('.menu') as HTMLElement
   })
   // FileHandler.configure({
   //   allowedMimeTypes: ['image/png', 'image/jpeg', 'image/gif', 'image/webp'],

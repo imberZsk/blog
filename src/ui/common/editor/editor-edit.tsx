@@ -3,7 +3,7 @@
 import { fetchEventSource } from '@microsoft/fetch-event-source'
 import { useState, useRef } from 'react'
 import { defaultExtensions } from './custom/extension-default'
-import { useEditor, EditorContent } from '@tiptap/react'
+import { useEditor, EditorContent, BubbleMenu } from '@tiptap/react'
 import {
   Modal,
   ModalContent,
@@ -23,113 +23,6 @@ const EditorEdit = () => {
   const el3 = useRef(null)
   const el4 = useRef(null)
   const typed = useRef<Typed | null>(null)
-
-  // 拍平数组
-  // useEffect(() => {
-  //   const a = [
-  //     [1, 2],
-  //     [3, 4],
-  //     [2, 3, 4, [7, 4, 9]]
-  //   ]
-
-  //   const flat = arr => {
-  //     return arr.reduce((p, n) => {
-  //       return p.concat(Array.isArray(n) ? flat(n) : n)
-  //     }, [])
-  //   }
-
-  //   console.log(flat(a))
-  // }, [])
-
-  // 数组转树
-  // useEffect(() => {
-  //   // 测试数据
-  //   const arr = [
-  //     { id: '01', name: '张大大', pid: '', job: '项目经理' },
-  //     { id: '02', name: '小亮', pid: '01', job: '产品leader' },
-  //     { id: '03', name: '小美', pid: '01', job: 'UIleader' },
-  //     { id: '04', name: '老马', pid: '01', job: '技术leader' },
-  //     { id: '05', name: '老王', pid: '01', job: '测试leader' },
-  //     { id: '06', name: '老李', pid: '01', job: '运维leader' },
-  //     { id: '07', name: '小丽', pid: '02', job: '产品经理' },
-  //     { id: '08', name: '大光', pid: '02', job: '产品经理' },
-  //     { id: '09', name: '小高', pid: '03', job: 'UI设计师' },
-  //     { id: '10', name: '小刘', pid: '04', job: '前端工程师' },
-  //     { id: '11', name: '小华', pid: '04', job: '后端工程师' },
-  //     { id: '12', name: '小李', pid: '04', job: '后端工程师' },
-  //     { id: '13', name: '小赵', pid: '05', job: '测试工程师' },
-  //     { id: '14', name: '小强', pid: '05', job: '测试工程师' },
-  //     { id: '15', name: '小涛', pid: '06', job: '运维工程师' }
-  //   ]
-
-  //   function ArrToTree(arr, id = 0) {
-  //     const target = []
-  //     arr.forEach(item => {
-  //       if (item.pid == id) {
-  //         const children = ArrToTree(arr, item.id)
-  //         if (children.length > 0) {
-  //           item.children = children
-  //         }
-  //         target.push(item)
-  //       }
-  //     })
-  //     return target
-  //   }
-
-  //   console.log(ArrToTree(arr))
-  // }, [])
-
-  // 深拷贝
-  // useEffect(() => {
-  //   const obj = {
-  //     a: 1,
-  //     b: 2,
-  //     c: [132456]
-  //   }
-
-  //   const deepClone = (obj, cache = new WeakMap()) => {
-  //     if (typeof obj !== 'object' || obj === null) return obj
-
-  //     if (cache.has(obj)) {
-  //       return cache.get(obj)
-  //     }
-
-  //     const target = Array.isArray(obj) ? [] : {}
-
-  //     cache.set(obj, target)
-
-  //     for (let key in obj) {
-  //       if (obj.hasOwnProperty(key)) {
-  //         target[key] = deepClone(obj[key])
-  //       }
-  //     }
-  //     return target
-  //   }
-
-  //   console.log(deepClone(obj))
-  // }, [])
-
-  // 大数相加
-  // useEffect(() => {
-  //   var addStrings = function (num1, num2) {
-  //     let i = num1.length - 1,
-  //       j = num2.length - 1,
-  //       add = 0
-  //     const ans = []
-  //     while (i >= 0 || j >= 0 || add != 0) {
-  //       const x = i >= 0 ? num1.charAt(i) - '0' : 0
-  //       const y = j >= 0 ? num2.charAt(j) - '0' : 0
-  //       const result = x + y + add
-  //       ans.push(result % 10)
-  //       add = Math.floor(result / 10)
-  //       i -= 1
-  //       j -= 1
-  //     }
-  //     return ans.reverse().join('')
-  //   }
-
-  //   console.log(addStrings('123', '456'))
-  // }, [])
 
   const [aiData, setAiData] = useState('')
 
@@ -198,10 +91,6 @@ const EditorEdit = () => {
   if (!editor) return null
 
   const handleAI1 = async () => {
-    // const eventSource = new EventSource('http://localhost:3000/stream')
-    // eventSource.onmessage = ({ data }) => {
-    //   console.log('New message', JSON.parse(data))
-    // }
     const url = `/api-myplus/myplus-qing/ug/ai/gc/document/friend?text=${encodeURIComponent('魅族')}`
     let tar = ''
     await fetchEventSource(url, {
@@ -381,18 +270,64 @@ const EditorEdit = () => {
         </button>
         <button
           onClick={() => {
-            const curData = {
-              ...data,
-              content: JSON.stringify(editor.getJSON().content)
+            // const curData = {
+            //   ...data,
+            //   content: JSON.stringify(editor.getJSON().content)
+            // }
+            // console.log(curData)
+
+            // const content = JSON.parse(curData.content)
+
+            function transformFields(input) {
+              const transformed = input.map(item => ({
+                t: item.type === 'paragraph' ? 'p' : item.type,
+                c: item.content?.map(contentItem => {
+                  const marks = contentItem.marks || []
+                  const isBold = marks.some(mark => mark.type === 'bold')
+                  const isItalic = marks.some(mark => mark.type === 'italic')
+
+                  return {
+                    x: contentItem.text,
+                    ...(isBold ? { b: true } : {}),
+                    ...(isItalic ? { l: true } : {})
+                  }
+                }) || [{ x: '' }]
+              }))
+
+              return transformed
             }
 
-            console.log(curData)
+            console.log(transformFields(editor.getJSON().content))
+            const target = JSON.stringify(transformFields(editor.getJSON().content))
+
+            // 自己的接口
             // fetch('/api/editor/create', {
             //   method: 'POST',
             //   body: JSON.stringify(curData)
             // })
             //   .then(res => res.json())
             //   .then(res => console.log(res, 'res'))
+
+            // 发布文章到社区
+
+            fetch('/api-myplus/myplus-qing/u/content/auth/create/v4', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                title: '111',
+                ats: [],
+                format: 2,
+                forumId: 238,
+                topicIds: '',
+                content: target
+              })
+            })
+              .then(res => res.json())
+              .then(res => {
+                window.open(`https://www.meizu.cn/thread/${res.data.id}`)
+              })
           }}
         >
           发布文章
@@ -451,6 +386,26 @@ const EditorEdit = () => {
             spellCheck="true"
           ></div>
         </div>
+        <BubbleMenu editor={editor} tippyOptions={{ duration: 100 }}>
+          <button
+            onClick={() => editor.chain().focus().toggleBold().run()}
+            className={`${editor.isActive('bold') ? 'is-active' : ''} mr-[20px]`}
+          >
+            bold
+          </button>
+          <button
+            onClick={() => editor.chain().focus().toggleItalic().run()}
+            className={`editor.isActive('italic') ? 'is-active' : '' mr-[20px]`}
+          >
+            italic
+          </button>
+          <button
+            onClick={() => editor.chain().focus().toggleStrike().run()}
+            className={editor.isActive('strike') ? 'is-active' : ''}
+          >
+            strike
+          </button>
+        </BubbleMenu>
         <EditorContent editor={editor} className="editorContent" />
       </div>
 
