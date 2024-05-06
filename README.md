@@ -1,16 +1,30 @@
 ## 项目介绍
 
-基于 nextjs14、prisma、mysql 的全栈博客
+基于 nextjs14 海外技术栈的博客
 
 ## 项目亮点
 
-- [x] 🎃 基于`tailwind`的主题切换，支持持久化缓存，系统主题同步，多标签同步，无抖动
-- [x] 🤖 基于`threejs`的`3D`模型渲染
-- [x] 👽 高性能的`SSG`国际化
-- [x] 👻 基于`Tiptap`的所见即所得编辑器，接入`AI`功能
-- [x] 🤡 使用`strict CSP`处理前端安全，防止`XSS`攻击
-- [x] 💀 使用虚拟列表对长列表做性能优化，支持不定高
-- [x] 👺 响应式的瀑布流
-- [x] 👿 现代化的ORM，prisma
+- [x] 🎃 基于`Tailwindcss`的原子化`CSS`方案
+- [x] 🐼 基于`Typescript`强类型语言
+- [x] 💕 基于`Next.js14`的高性能`SSG`国际化，`Strict CSP`预防`XSS`攻击
+- [x] 🐷 基于`Shadcn`的`Headless`组件
+- [x] 🐷 基于`Next-theme`的持久化，无抖动，多标签同步的主题切换
+- [x] 👛 基于`Prisma`、`PostgreSql`、`Supabase` 的数据存储
+- [x] 🐹 基于 `NextAuth`的身份验证
+- [x] 🦄 基于`Docker`和`Github Actions`自动化`CI/CD`部署
+- [x] 🚀 基于`Strapi`的`CMS`数据支持
+- [x] 🤖 基于`threejs`的`3D`模型渲染，基于`Tiptap`的编辑器，基于`Framer Motion`的`Web`动画
 
-- [ ] 虚拟列表瀑布流
+## commitlint
+
+build
+chore
+ci
+docs
+feat
+fix
+perf
+refactor
+revert
+style
+test
