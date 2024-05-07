@@ -4,7 +4,6 @@
   "trailingComma": "none",
   "tabWidth": 2,
   "plugins": ["prettier-plugin-tailwindcss"],
-  "arrowParens": "avoid",
   "printWidth": 120,
   "endOfLine": "lf"
 }
