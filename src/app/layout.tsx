@@ -11,6 +11,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="zh-CN" suppressHydrationWarning>
+      <link rel="canonical" href="https://imber.top"></link>
       <body className="text-gray-700 dark:text-gray-200">
         <Providers themeProps={{ attribute: 'class', defaultTheme: 'dark' }}>{children}</Providers>
       </body>
